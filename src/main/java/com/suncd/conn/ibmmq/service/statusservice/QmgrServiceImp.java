@@ -10,12 +10,13 @@ import com.ibm.mq.constants.CMQCFC;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
+import com.suncd.conn.ibmmq.system.configuration.IbmMqJmsConfiguration;
+import com.suncd.conn.ibmmq.utils.QmgrFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Service
@@ -23,6 +24,8 @@ public class QmgrServiceImp implements QmgrService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QmgrServiceImp.class);
 
     @Autowired
+    private QmgrFactory qmgrFactory;
+
     private MQQueueManager mqQueueManager;
 
     /**
@@ -39,6 +42,9 @@ public class QmgrServiceImp implements QmgrService {
      */
     @Override
     public int getLocalQueueDepth(String qName) {
+        if(this.mqQueueManager == null){
+            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+        }
         int qOption = CMQC.MQOO_FAIL_IF_QUIESCING | CMQC.MQOO_INQUIRE | CMQC.MQOO_BROWSE;
         MQQueue queue;
         try {
@@ -47,7 +53,10 @@ public class QmgrServiceImp implements QmgrService {
             queue.close();
             return depth;
         } catch (MQException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage());
+            if(e.getReason() == 2009){
+                this.mqQueueManager = qmgrFactory.createmqQueueManager();
+            }
             return -1;
         }
     }
@@ -57,16 +66,18 @@ public class QmgrServiceImp implements QmgrService {
      *
      * @param channelName 通道名称
      * @return 通道状态int类型
-     * 1-正在初始化
-     * 2-正在绑定
+     * 0-正在初始化
+     * 1-正在绑定
      * 3-正在运行
-     * 4-正在重试
-     * 5-正在结束
+     * 5-正在重试
      * 6-已停止
-     * 0-未知
+     * -1-不活动的
      */
     @Override
     public int getChannelStatus(String channelName) {
+        if(this.mqQueueManager == null){
+            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+        }
         try {
             PCFMessageAgent agent = new PCFMessageAgent(mqQueueManager);
             PCFMessage pcfRequest = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
@@ -78,10 +89,13 @@ public class QmgrServiceImp implements QmgrService {
             return channelStatus;
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            return -1;
+            return -9;
         } catch (MQDataException eh){
             LOGGER.error(eh.getMessage());
-            return -9;
+            if(eh.getReason() == 2009){
+                this.mqQueueManager = qmgrFactory.createmqQueueManager();
+            }
+            return -1;
         }
     }
 }

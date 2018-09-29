@@ -4,13 +4,10 @@ http://www.suncd.com
 */
 package com.suncd.conn.ibmmq.system.configuration;
 
-import com.ibm.mq.MQEnvironment;
-import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueueManager;
+
 import com.ibm.mq.jms.MQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsOperations;
@@ -20,7 +17,7 @@ import org.springframework.jms.core.JmsTemplate;
 public class IbmMqJmsConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(IbmMqJmsConfiguration.class);
 
-    @Value("${ibm.mq.queue-manager}")
+    /*@Value("${ibm.mq.queue-manager}")
     private String qmName;
     @Value("${ibm.mq.hostDef}")
     private String host;
@@ -33,7 +30,7 @@ public class IbmMqJmsConfiguration {
     @Value("${ibm.mq.password}")
     private String password;
     @Value("${ibm.mq.ccsidDef}")
-    private int ccsid;
+    private int ccsid;*/
 
     /*
     @Bean
@@ -86,22 +83,22 @@ public class IbmMqJmsConfiguration {
         return jmsTemplate;
     }
 
-    @Bean
-    public MQQueueManager getMQQueueManager() {
-        MQEnvironment.hostname = host;
-        MQEnvironment.port = port;
-        MQEnvironment.userID = user;
-        MQEnvironment.password = password;
-        MQEnvironment.channel = channel;
-        MQEnvironment.CCSID = ccsid;
-        MQQueueManager mqQueueManager = null;
-        try {
-            mqQueueManager = new MQQueueManager(qmName);
-        } catch (MQException e) {
-            LOGGER.error("初始化队列管理器出现异常",e);
-        }
-        LOGGER.info("初始化队列管理器完成!");
-        return mqQueueManager;
-    }
+//    @Bean
+//    public MQQueueManager getMQQueueManager() {
+//        MQEnvironment.hostname = host;
+//        MQEnvironment.port = port;
+//        MQEnvironment.userID = user;
+//        MQEnvironment.password = password;
+//        MQEnvironment.channel = channel;
+//        MQEnvironment.CCSID = ccsid;
+//        MQQueueManager mqQueueManager = null;
+//        try {
+//            mqQueueManager = new MQQueueManager(qmName);
+//        } catch (MQException e) {
+//            LOGGER.error("初始化队列管理器出现异常",e);
+//        }
+//        LOGGER.info("初始化队列管理器完成!");
+//        return mqQueueManager;
+//    }
 
 }

@@ -18,18 +18,19 @@ spring:
 
 ibm:
   mq:
-    queue-manager: TEST.QM
-    conn-name: 192.168.1.66(1414)
+    queue-manager: TEST
+    conn-name: 192.168.1.65(1414)
     channel: SYSTEM.DEF.SVRCONN
-    user: mqm
+#    user: mqm
+    user: MUSR_MQADMIN
     password: mqm
     client-id: ansteelmql3
-    hostDef: 192.168.1.66
+    hostDef: 192.168.1.65
     portDef: 1414
     ccsidDef: 1381
   recv:
     queue:
-      q1: WIN.LUX.Q
+      q1: LUX.WIN.Q
 
 
 
