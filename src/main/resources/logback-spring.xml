@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="ServerIP" source="spring.cloud.client.ipAddress" defaultValue="0.0.0.0"/>
+    <springProperty scope="context" name="ServerPort" source="server.port" defaultValue="0000"/>
+    <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="acs"/>
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 系统日志、错误日志格式 -->
+    <property name="ROOT_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } -- [%15.15t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+    <!-- 普通消息日志格式 -->
+    <property name="MSG_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+
+    <!-- 控制台日志 -->
+    <appender name="StdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>${ROOT_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 系统日志、异常日志 -->
+    <appender name="sysLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/mq/sysLog/system-out.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>logs/mq/sysLog/system-out_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 10MB -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${ROOT_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!-- mq发送日志 -->
+    <appender name="mqSendLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/mq/sendLog/message-send.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/mq/sendLog/message-send_%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 10MB -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${MSG_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- mq接收日志 -->
+    <appender name="mqRecvLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/mq/recvLog/message-recv.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/mq/recvLog/message-recv_%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 10MB -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${MSG_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="sysLogAppender"/>
+    </root>
+
+    <!-- 异常及警告输出到系统日志中 -->
+    <logger name="warnAndErrorLogger" additivity="false">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="sysLogAppender"/>
+    </logger>
+
+    <!-- 发送消息记录到发送日志中 -->
+    <logger name="com.suncd.conn.ibmmq.service.messageservice.sender" level="info" additivity="false">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="mqSendLogAppender"/>
+    </logger>
+
+    <!-- 接收消息记录到接收日志中 -->
+    <logger name="com.suncd.conn.ibmmq.service.messageservice.listener" level="info" additivity="false">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="mqRecvLogAppender"/>
+    </logger>
+
+</configuration>
