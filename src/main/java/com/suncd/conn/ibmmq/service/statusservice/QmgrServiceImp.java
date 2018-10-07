@@ -10,13 +10,13 @@ import com.ibm.mq.constants.CMQCFC;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
-import com.suncd.conn.ibmmq.system.configuration.IbmMqJmsConfiguration;
 import com.suncd.conn.ibmmq.utils.QmgrFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Service
@@ -42,9 +42,7 @@ public class QmgrServiceImp implements QmgrService {
      */
     @Override
     public int getLocalQueueDepth(String qName) {
-        if(this.mqQueueManager == null){
-            this.mqQueueManager = qmgrFactory.createmqQueueManager();
-        }
+        checkQmgr();
         int qOption = CMQC.MQOO_FAIL_IF_QUIESCING | CMQC.MQOO_INQUIRE | CMQC.MQOO_BROWSE;
         MQQueue queue;
         try {
@@ -54,9 +52,7 @@ public class QmgrServiceImp implements QmgrService {
             return depth;
         } catch (MQException e) {
             LOGGER.error(e.getMessage());
-            if(e.getReason() == 2009){
-                this.mqQueueManager = qmgrFactory.createmqQueueManager();
-            }
+            reconnect(e);
             return -1;
         }
     }
@@ -71,13 +67,11 @@ public class QmgrServiceImp implements QmgrService {
      * 3-正在运行
      * 5-正在重试
      * 6-已停止
-     * -1-不活动的
+     * -1-未知状态
      */
     @Override
     public int getChannelStatus(String channelName) {
-        if(this.mqQueueManager == null){
-            this.mqQueueManager = qmgrFactory.createmqQueueManager();
-        }
+        checkQmgr();
         try {
             PCFMessageAgent agent = new PCFMessageAgent(mqQueueManager);
             PCFMessage pcfRequest = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
@@ -92,10 +86,27 @@ public class QmgrServiceImp implements QmgrService {
             return -9;
         } catch (MQDataException eh){
             LOGGER.error(eh.getMessage());
-            if(eh.getReason() == 2009){
-                this.mqQueueManager = qmgrFactory.createmqQueueManager();
-            }
+            reconnect(eh);
             return -1;
+        }
+    }
+
+    @PostConstruct
+    private void checkQmgr(){
+        if(this.mqQueueManager == null){
+            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+        }
+    }
+
+    private void reconnect(MQException e){
+        if(e.getReason() == 2009){
+            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+        }
+    }
+
+    private void reconnect(MQDataException e){
+        if(e.getReason() == 2009){
+            this.mqQueueManager = qmgrFactory.createmqQueueManager();
         }
     }
 }

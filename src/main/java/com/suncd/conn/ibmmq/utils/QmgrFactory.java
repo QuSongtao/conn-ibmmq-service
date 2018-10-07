@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.suncd.conn.ibmmq.system.constants.Constant;
+
 @Component
 public class QmgrFactory {
 
@@ -42,8 +44,10 @@ public class QmgrFactory {
         MQQueueManager mqQueueManager = null;
         try {
             mqQueueManager = new MQQueueManager(qmName);
-            LOGGER.info("初始化队列管理器完成!");
+            Constant.QMGR_STATUS = 1;
+            LOGGER.error("初始化队列管理器完成!");
         } catch (MQException e) {
+            Constant.QMGR_STATUS = 0;
             LOGGER.error("初始化队列管理器出现异常",e);
         }
         return mqQueueManager;

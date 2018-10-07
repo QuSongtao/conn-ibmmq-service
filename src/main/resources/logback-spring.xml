@@ -9,7 +9,7 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 系统日志、错误日志格式 -->
-    <property name="ROOT_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } -- [%15.15t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+    <property name="ROOT_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} - [%15.15t] %-40.40logger{39} :: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
     <!-- 普通消息日志格式 -->
     <property name="MSG_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
 
@@ -24,10 +24,10 @@
 
     <!-- 系统日志、异常日志 -->
     <appender name="sysLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/mq/sysLog/system-out.log</file>
+        <file>logs/mq/sysLog/out.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>logs/mq/sysLog/system-out_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/mq/sysLog/out_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!--保留时间,单位:天-->
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -46,9 +46,9 @@
 
     <!-- mq发送日志 -->
     <appender name="mqSendLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/mq/sendLog/message-send.log</file>
+        <file>logs/mq/sendLog/send.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/mq/sendLog/message-send_%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>logs/mq/sendLog/send_%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <!--保留时间,单位:天-->
             <maxHistory>30</maxHistory>
@@ -70,9 +70,9 @@
 
     <!-- mq接收日志 -->
     <appender name="mqRecvLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/mq/recvLog/message-recv.log</file>
+        <file>logs/mq/recvLog/recv.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/mq/recvLog/message-recv_%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>logs/mq/recvLog/recv_%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <!--保留时间,单位:天-->
             <maxHistory>30</maxHistory>

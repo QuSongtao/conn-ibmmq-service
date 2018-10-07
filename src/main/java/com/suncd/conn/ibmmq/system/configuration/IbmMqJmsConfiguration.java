@@ -76,10 +76,10 @@ public class IbmMqJmsConfiguration {
     }*/
 
     @Bean
-    public JmsOperations jmsOperations(MQConnectionFactory cachingConnectionFactory) {
-        JmsTemplate jmsTemplate = new JmsTemplate(cachingConnectionFactory);
+    public JmsOperations jmsOperations(MQConnectionFactory mqConnectionFactory) {
+        JmsTemplate jmsTemplate = new JmsTemplate(mqConnectionFactory);
         jmsTemplate.setReceiveTimeout(20000);
-        LOGGER.info("初始化JMS模板完成!");
+        LOGGER.warn("初始化JMS模板完成!");
         return jmsTemplate;
     }
 

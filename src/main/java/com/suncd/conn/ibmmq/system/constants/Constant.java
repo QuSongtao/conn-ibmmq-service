@@ -11,5 +11,7 @@ public class Constant {
     }
 
     // ------------------------------------ MQ CONSTANTS ------------------------------------
+    // 队列管理器状态 0-停止 1-运行
+    public static int QMGR_STATUS = 0;
 
 }
