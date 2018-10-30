@@ -5,10 +5,7 @@ http://www.suncd.com
 package com.suncd.conn.ibmmq.service.messageservice.sender;
 
 import com.ibm.mq.jms.MQConnectionFactory;
-import com.suncd.conn.ibmmq.dao.ConnConfTelDao;
-import com.suncd.conn.ibmmq.dao.ConnSendMainDao;
-import com.suncd.conn.ibmmq.dao.ConnSendMainHisDao;
-import com.suncd.conn.ibmmq.dao.ConnSendMsgDao;
+import com.suncd.conn.ibmmq.dao.*;
 import com.suncd.conn.ibmmq.entity.ConnConfTel;
 import com.suncd.conn.ibmmq.entity.ConnSendMain;
 import com.suncd.conn.ibmmq.entity.ConnSendMainHis;
@@ -39,6 +36,8 @@ public class MessageSendServiceImp implements MessageSendService {
     private ConnSendMsgDao connSendMsgDao;
     @Autowired
     private ConnConfTelDao connConfTelDao;
+    @Autowired
+    private ConnTotalNumDao connTotalNumDao;
 //
 //    @Autowired
 //    private MQConnectionFactory mqConnectionFactory;
@@ -68,6 +67,7 @@ public class MessageSendServiceImp implements MessageSendService {
         for (ConnSendMain connSendMain : connSendMains) {
             String sendFlag;
             String sendReslut;
+            String totalType; // 统计类型
             // 1.组装消息及队列
             String telId = connSendMain.getTelId();
             String msgId = connSendMain.getMsgId();
@@ -81,6 +81,7 @@ public class MessageSendServiceImp implements MessageSendService {
                 LOGGER.info(new String(msgBuf));
                 sendReslut = "发送成功!";
                 sendFlag = "1";
+                totalType = "SS";
             }else{
                 if(queueName == null){
                     sendReslut = "发送失败: 在CONN_CONF_TEL表没有配置对应的队列";
@@ -88,6 +89,7 @@ public class MessageSendServiceImp implements MessageSendService {
                     sendReslut = "发送失败: 发送消息内容为空,消息表:CONN_SEND_MSG";
                 }
                 sendFlag = "0";
+                totalType = "SE";
             }
 
             // 3.按主键删除发送总表记录
@@ -104,6 +106,9 @@ public class MessageSendServiceImp implements MessageSendService {
             connSendMainHis.setTelId(connSendMain.getTelId());
             connSendMainHis.setTelType(connSendMain.getTelType());
             connSendMainHisDao.insertSelective(connSendMainHis);
+
+            // 5.更新统计表
+            connTotalNumDao.updateTotalNum(totalType);
         }
     }
 
