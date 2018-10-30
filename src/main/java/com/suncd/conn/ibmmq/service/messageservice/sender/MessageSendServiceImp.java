@@ -4,7 +4,6 @@ http://www.suncd.com
 */
 package com.suncd.conn.ibmmq.service.messageservice.sender;
 
-import com.ibm.mq.jms.MQConnectionFactory;
 import com.suncd.conn.ibmmq.dao.*;
 import com.suncd.conn.ibmmq.entity.ConnConfTel;
 import com.suncd.conn.ibmmq.entity.ConnSendMain;
@@ -38,9 +37,6 @@ public class MessageSendServiceImp implements MessageSendService {
     private ConnConfTelDao connConfTelDao;
     @Autowired
     private ConnTotalNumDao connTotalNumDao;
-//
-//    @Autowired
-//    private MQConnectionFactory mqConnectionFactory;
 
     @Override
     public void sendMessage(String destinationName, String message) {
@@ -82,10 +78,10 @@ public class MessageSendServiceImp implements MessageSendService {
                 sendReslut = "发送成功!";
                 sendFlag = "1";
                 totalType = "SS";
-            }else{
-                if(queueName == null){
+            } else {
+                if (queueName == null) {
                     sendReslut = "发送失败: 在CONN_CONF_TEL表没有配置对应的队列";
-                }else{
+                } else {
                     sendReslut = "发送失败: 发送消息内容为空,消息表:CONN_SEND_MSG";
                 }
                 sendFlag = "0";
