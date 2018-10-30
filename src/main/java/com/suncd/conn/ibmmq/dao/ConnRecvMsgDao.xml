@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnRecvMsgDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    <result column="msgTxt" jdbcType="LONGVARCHAR" property="msgTxt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, createTime
+  </sql>
+  <sql id="Blob_Column_List">
+    msgTxt
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from conn_recv_msg
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_recv_msg
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_recv_msg (createTime, msgTxt)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{msgTxt,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_recv_msg
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="msgTxt != null">
+        msgTxt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgTxt != null">
+        #{msgTxt,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    update conn_recv_msg
+    <set>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgTxt != null">
+        msgTxt = #{msgTxt,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    update conn_recv_msg
+    set createTime = #{createTime,jdbcType=TIMESTAMP},
+      msgTxt = #{msgTxt,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMsg">
+    update conn_recv_msg
+    set createTime = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

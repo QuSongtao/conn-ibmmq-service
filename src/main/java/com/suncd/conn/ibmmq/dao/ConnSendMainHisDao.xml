@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnSendMainHisDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnSendMainHis">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="telId" jdbcType="VARCHAR" property="telId" />
+    <result column="telType" jdbcType="CHAR" property="telType" />
+    <result column="msgId" jdbcType="CHAR" property="msgId" />
+    <result column="sendFlag" jdbcType="CHAR" property="sendFlag" />
+    <result column="sendResult" jdbcType="VARCHAR" property="sendResult" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pushLongTime" jdbcType="INTEGER" property="pushLongTime" />
+    <result column="pushSeqNo" jdbcType="INTEGER" property="pushSeqNo" />
+    <result column="sendTime" jdbcType="TIMESTAMP" property="sendTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, telId, telType, msgId, sendFlag, sendResult, createTime, pushLongTime, pushSeqNo, sendTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_send_main_his
+    where id = #{id,jdbcType=CHAR}
+  </select>
+
+  <!--按发送时间和电文id查询发送历史-->
+  <select id="findBySendTimeAndTelId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from conn_send_main_his
+    where sendTime &gt;= #{dtStart} and sendTime &lt;= #{dtEnd}
+    <if test="telId != null">
+      and telId like CONCAT('%',#{telId,jdbcType=VARCHAR},'%')
+    </if>
+    order by sendTime asc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_send_main_his
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnSendMainHis">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_send_main_his (telId, telType, msgId, 
+      sendFlag, createTime, pushLongTime, 
+      pushSeqNo, sendTime)
+    values (#{telId,jdbcType=VARCHAR}, #{telType,jdbcType=CHAR}, #{msgId,jdbcType=CHAR}, 
+      #{sendFlag,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{pushLongTime,jdbcType=INTEGER}, 
+      #{pushSeqNo,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnSendMainHis">
+    insert into conn_send_main_his
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        id,
+      <if test="telId != null">
+        telId,
+      </if>
+      <if test="telType != null">
+        telType,
+      </if>
+      <if test="msgId != null">
+        msgId,
+      </if>
+      <if test="sendFlag != null">
+        sendFlag,
+      </if>
+      <if test="sendResult != null">
+        sendResult,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="pushLongTime != null">
+        pushLongTime,
+      </if>
+      <if test="pushSeqNo != null">
+        pushSeqNo,
+      </if>
+      <if test="sendTime != null">
+        sendTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{id,jdbcType=CHAR},
+      <if test="telId != null">
+        #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telType != null">
+        #{telType,jdbcType=CHAR},
+      </if>
+      <if test="msgId != null">
+        #{msgId,jdbcType=CHAR},
+      </if>
+      <if test="sendFlag != null">
+        #{sendFlag,jdbcType=CHAR},
+      </if>
+      <if test="sendResult != null">
+        #{sendResult,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pushLongTime != null">
+        #{pushLongTime,jdbcType=INTEGER},
+      </if>
+      <if test="pushSeqNo != null">
+        #{pushSeqNo,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnSendMainHis">
+    update conn_send_main_his
+    <set>
+      <if test="telId != null">
+        telId = #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telType != null">
+        telType = #{telType,jdbcType=CHAR},
+      </if>
+      <if test="msgId != null">
+        msgId = #{msgId,jdbcType=CHAR},
+      </if>
+      <if test="sendFlag != null">
+        sendFlag = #{sendFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pushLongTime != null">
+        pushLongTime = #{pushLongTime,jdbcType=INTEGER},
+      </if>
+      <if test="pushSeqNo != null">
+        pushSeqNo = #{pushSeqNo,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null">
+        sendTime = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnSendMainHis">
+    update conn_send_main_his
+    set telId = #{telId,jdbcType=VARCHAR},
+      telType = #{telType,jdbcType=CHAR},
+      msgId = #{msgId,jdbcType=CHAR},
+      sendFlag = #{sendFlag,jdbcType=CHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      pushLongTime = #{pushLongTime,jdbcType=INTEGER},
+      pushSeqNo = #{pushSeqNo,jdbcType=INTEGER},
+      sendTime = #{sendTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

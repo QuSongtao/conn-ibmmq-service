@@ -10,18 +10,25 @@ import com.ibm.mq.constants.CMQCFC;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
+import com.suncd.conn.ibmmq.system.constants.Constant;
 import com.suncd.conn.ibmmq.utils.QmgrFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class QmgrServiceImp implements QmgrService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QmgrServiceImp.class);
+
+    @Value("${ibm.mq.queue-manager}")
+    private String qmgrName;
 
     @Autowired
     private QmgrFactory qmgrFactory;
@@ -78,35 +85,63 @@ public class QmgrServiceImp implements QmgrService {
             pcfRequest.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, channelName);
             PCFMessage[] response = agent.send(pcfRequest);
             int channelStatus = response[0].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
-            LOGGER.info("通道状态:{}",channelStatus);
+            LOGGER.info("通道状态:{}", channelStatus);
             agent.disconnect();
             return channelStatus;
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             return -9;
-        } catch (MQDataException eh){
+        } catch (MQDataException eh) {
             LOGGER.error(eh.getMessage());
             reconnect(eh);
             return -1;
         }
     }
 
+    /**
+     * 获取队列管理器状态
+     *
+     * @return map {'qmgrName':'XXXX.QM','status':'RUNNING or DOWN'}
+     */
+    @Override
+    public Map getQmgrStatus() {
+        Map<String, String> map = new HashMap<>();
+        map.put("qmgrName", qmgrName);
+        getChannelStatus("SYSTEM.DEF.SVRCONN");
+        map.put("status", Constant.QMGR_STATUS == 0 ? "DOWN" : "RUNNING");
+        return map;
+    }
+
+    /**
+     * 服务启动时检测队列管理器状态
+     * 能够连接上则证明队列管理器正常
+     */
     @PostConstruct
-    private void checkQmgr(){
-        if(this.mqQueueManager == null){
-            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+    private void checkQmgr() {
+        if (this.mqQueueManager == null) {
+            this.mqQueueManager = qmgrFactory.createMqQueueManager();
         }
     }
 
-    private void reconnect(MQException e){
-        if(e.getReason() == 2009){
-            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+    /**
+     * MQ 2009错误代码 为队列管理器连接异常
+     *
+     * @param e MQException
+     */
+    private void reconnect(MQException e) {
+        if (e.getReason() == 2009) {
+            this.mqQueueManager = qmgrFactory.createMqQueueManager();
         }
     }
 
-    private void reconnect(MQDataException e){
-        if(e.getReason() == 2009){
-            this.mqQueueManager = qmgrFactory.createmqQueueManager();
+    /**
+     * MQ 2009错误代码 为队列管理器连接异常
+     *
+     * @param e MQDataException
+     */
+    private void reconnect(MQDataException e) {
+        if (e.getReason() == 2009) {
+            this.mqQueueManager = qmgrFactory.createMqQueueManager();
         }
     }
 }

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnRecvMainHisDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnRecvMainHis">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="telId" jdbcType="VARCHAR" property="telId" />
+    <result column="telType" jdbcType="CHAR" property="telType" />
+    <result column="msgId" jdbcType="CHAR" property="msgId" />
+    <result column="recvTime" jdbcType="TIMESTAMP" property="recvTime" />
+    <result column="dealFlag" jdbcType="CHAR" property="dealFlag" />
+    <result column="dealTime" jdbcType="TIMESTAMP" property="dealTime" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, telId, telType, msgId, recvTime, dealFlag, dealTime, des
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_recv_main_his
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_recv_main_his
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMainHis">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_recv_main_his (telId, telType, msgId, 
+      recvTime, dealFlag, dealTime, 
+      des)
+    values (#{telId,jdbcType=VARCHAR}, #{telType,jdbcType=CHAR}, #{msgId,jdbcType=CHAR}, 
+      #{recvTime,jdbcType=TIMESTAMP}, #{dealFlag,jdbcType=CHAR}, #{dealTime,jdbcType=TIMESTAMP}, 
+      #{des,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMainHis">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_recv_main_his
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="telId != null">
+        telId,
+      </if>
+      <if test="telType != null">
+        telType,
+      </if>
+      <if test="msgId != null">
+        msgId,
+      </if>
+      <if test="recvTime != null">
+        recvTime,
+      </if>
+      <if test="dealFlag != null">
+        dealFlag,
+      </if>
+      <if test="dealTime != null">
+        dealTime,
+      </if>
+      <if test="des != null">
+        des,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="telId != null">
+        #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telType != null">
+        #{telType,jdbcType=CHAR},
+      </if>
+      <if test="msgId != null">
+        #{msgId,jdbcType=CHAR},
+      </if>
+      <if test="recvTime != null">
+        #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealFlag != null">
+        #{dealFlag,jdbcType=CHAR},
+      </if>
+      <if test="dealTime != null">
+        #{dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null">
+        #{des,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMainHis">
+    update conn_recv_main_his
+    <set>
+      <if test="telId != null">
+        telId = #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telType != null">
+        telType = #{telType,jdbcType=CHAR},
+      </if>
+      <if test="msgId != null">
+        msgId = #{msgId,jdbcType=CHAR},
+      </if>
+      <if test="recvTime != null">
+        recvTime = #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealFlag != null">
+        dealFlag = #{dealFlag,jdbcType=CHAR},
+      </if>
+      <if test="dealTime != null">
+        dealTime = #{dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null">
+        des = #{des,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMainHis">
+    update conn_recv_main_his
+    set telId = #{telId,jdbcType=VARCHAR},
+      telType = #{telType,jdbcType=CHAR},
+      msgId = #{msgId,jdbcType=CHAR},
+      recvTime = #{recvTime,jdbcType=TIMESTAMP},
+      dealFlag = #{dealFlag,jdbcType=CHAR},
+      dealTime = #{dealTime,jdbcType=TIMESTAMP},
+      des = #{des,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnConfTelDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnConfTel">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="telId" jdbcType="VARCHAR" property="telId" />
+    <result column="telName" jdbcType="VARCHAR" property="telName" />
+    <result column="transferType" jdbcType="CHAR" property="transferType" />
+    <result column="queueName" jdbcType="VARCHAR" property="queueName" />
+    <result column="remoteSystem" jdbcType="VARCHAR" property="remoteSystem" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, telId, telName, transferType, queueName, remoteSystem
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_conf_tel
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <select id="selectQueueName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from conn_conf_tel
+    where telId = #{telId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_conf_tel
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnConfTel">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_tel (telId, telName, transferType, 
+      queueName, remoteSystem)
+    values (#{telId,jdbcType=VARCHAR}, #{telName,jdbcType=VARCHAR}, #{transferType,jdbcType=CHAR}, 
+      #{queueName,jdbcType=VARCHAR}, #{remoteSystem,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfTel">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_tel
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="telId != null">
+        telId,
+      </if>
+      <if test="telName != null">
+        telName,
+      </if>
+      <if test="transferType != null">
+        transferType,
+      </if>
+      <if test="queueName != null">
+        queueName,
+      </if>
+      <if test="remoteSystem != null">
+        remoteSystem,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="telId != null">
+        #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telName != null">
+        #{telName,jdbcType=VARCHAR},
+      </if>
+      <if test="transferType != null">
+        #{transferType,jdbcType=CHAR},
+      </if>
+      <if test="queueName != null">
+        #{queueName,jdbcType=VARCHAR},
+      </if>
+      <if test="remoteSystem != null">
+        #{remoteSystem,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfTel">
+    update conn_conf_tel
+    <set>
+      <if test="telId != null">
+        telId = #{telId,jdbcType=VARCHAR},
+      </if>
+      <if test="telName != null">
+        telName = #{telName,jdbcType=VARCHAR},
+      </if>
+      <if test="transferType != null">
+        transferType = #{transferType,jdbcType=CHAR},
+      </if>
+      <if test="queueName != null">
+        queueName = #{queueName,jdbcType=VARCHAR},
+      </if>
+      <if test="remoteSystem != null">
+        remoteSystem = #{remoteSystem,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnConfTel">
+    update conn_conf_tel
+    set telId = #{telId,jdbcType=VARCHAR},
+      telName = #{telName,jdbcType=VARCHAR},
+      transferType = #{transferType,jdbcType=CHAR},
+      queueName = #{queueName,jdbcType=VARCHAR},
+      remoteSystem = #{remoteSystem,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

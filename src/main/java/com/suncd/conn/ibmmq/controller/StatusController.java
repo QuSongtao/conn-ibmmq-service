@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/qmgr")
-public class QmgrController {
+@RequestMapping("/mq")
+public class StatusController {
 
     @Autowired
     private QmgrService qmgrService;
@@ -27,5 +29,10 @@ public class QmgrController {
     public String getQueueStatus(String qName){
         int code = qmgrService.getLocalQueueDepth(qName);
         return "队列深度:" + code;
+    }
+
+    @RequestMapping(value = "/qmgr/status",method = RequestMethod.GET)
+    public Map getQmgrStatus(){
+        return qmgrService.getQmgrStatus();
     }
 }

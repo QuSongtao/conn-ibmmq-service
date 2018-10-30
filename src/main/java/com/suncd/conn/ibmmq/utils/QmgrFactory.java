@@ -34,7 +34,7 @@ public class QmgrFactory {
     @Value("${ibm.mq.ccsidDef}")
     private int ccsid;
 
-    public MQQueueManager createmqQueueManager(){
+    public MQQueueManager createMqQueueManager(){
         MQEnvironment.hostname = host;
         MQEnvironment.port = port;
         MQEnvironment.userID = user;
@@ -45,7 +45,7 @@ public class QmgrFactory {
         try {
             mqQueueManager = new MQQueueManager(qmName);
             Constant.QMGR_STATUS = 1;
-            LOGGER.error("初始化队列管理器完成!");
+            LOGGER.info("初始化队列管理器完成!");
         } catch (MQException e) {
             Constant.QMGR_STATUS = 0;
             LOGGER.error("初始化队列管理器出现异常",e);

@@ -6,4 +6,5 @@ package com.suncd.conn.ibmmq.service.messageservice.sender;
 
 public interface MessageSendService {
     void sendMessage(String destinationName,String message);
+    void sendMessage(String destinationName, byte[] msgBuf);
 }

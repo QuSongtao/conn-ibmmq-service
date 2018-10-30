@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnConfObjectDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnConfObject">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="objName" jdbcType="VARCHAR" property="objName" />
+    <result column="objDes" jdbcType="VARCHAR" property="objDes" />
+    <result column="objType" jdbcType="VARCHAR" property="objType" />
+    <result column="transferType" jdbcType="CHAR" property="transferType" />
+    <result column="remoteSystem" jdbcType="VARCHAR" property="remoteSystem" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, objName, objDes, objType, transferType, remoteSystem
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_conf_object
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_conf_object
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnConfObject">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_object (objName, objDes, objType, 
+      transferType, remoteSystem)
+    values (#{objName,jdbcType=VARCHAR}, #{objDes,jdbcType=VARCHAR}, #{objType,jdbcType=VARCHAR}, 
+      #{transferType,jdbcType=CHAR}, #{remoteSystem,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfObject">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_object
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="objName != null">
+        objName,
+      </if>
+      <if test="objDes != null">
+        objDes,
+      </if>
+      <if test="objType != null">
+        objType,
+      </if>
+      <if test="transferType != null">
+        transferType,
+      </if>
+      <if test="remoteSystem != null">
+        remoteSystem,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="objName != null">
+        #{objName,jdbcType=VARCHAR},
+      </if>
+      <if test="objDes != null">
+        #{objDes,jdbcType=VARCHAR},
+      </if>
+      <if test="objType != null">
+        #{objType,jdbcType=VARCHAR},
+      </if>
+      <if test="transferType != null">
+        #{transferType,jdbcType=CHAR},
+      </if>
+      <if test="remoteSystem != null">
+        #{remoteSystem,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfObject">
+    update conn_conf_object
+    <set>
+      <if test="objName != null">
+        objName = #{objName,jdbcType=VARCHAR},
+      </if>
+      <if test="objDes != null">
+        objDes = #{objDes,jdbcType=VARCHAR},
+      </if>
+      <if test="objType != null">
+        objType = #{objType,jdbcType=VARCHAR},
+      </if>
+      <if test="transferType != null">
+        transferType = #{transferType,jdbcType=CHAR},
+      </if>
+      <if test="remoteSystem != null">
+        remoteSystem = #{remoteSystem,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnConfObject">
+    update conn_conf_object
+    set objName = #{objName,jdbcType=VARCHAR},
+      objDes = #{objDes,jdbcType=VARCHAR},
+      objType = #{objType,jdbcType=VARCHAR},
+      transferType = #{transferType,jdbcType=CHAR},
+      remoteSystem = #{remoteSystem,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>
