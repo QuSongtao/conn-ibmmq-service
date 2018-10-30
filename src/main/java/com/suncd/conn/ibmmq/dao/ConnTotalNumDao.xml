@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnTotalNumDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnTotalNum">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="totalNum" jdbcType="BIGINT" property="totalNum" />
+    <result column="type" jdbcType="CHAR" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, totalNum, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_total_num
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_total_num
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnTotalNum">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_total_num (totalNum, type)
+    values (#{totalNum,jdbcType=BIGINT}, #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnTotalNum">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_total_num
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="totalNum != null">
+        totalNum,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="totalNum != null">
+        #{totalNum,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnTotalNum">
+    update conn_total_num
+    <set>
+      <if test="totalNum != null">
+        totalNum = #{totalNum,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnTotalNum">
+    update conn_total_num
+    set totalNum = #{totalNum,jdbcType=BIGINT},
+      type = #{type,jdbcType=CHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateTotalNum" parameterType="java.lang.String">
+      update conn_total_num
+      set totalNum = totalNum + 1,
+      where type = #{type,jdbcType=CHAR}
+    </update>
+</mapper>
