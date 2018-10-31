@@ -68,7 +68,7 @@
   </update>
   <update id="updateTotalNum" parameterType="java.lang.String">
       update conn_total_num
-      set totalNum = totalNum + 1,
+      set totalNum = totalNum + 1
       where type = #{type,jdbcType=CHAR}
     </update>
 </mapper>
