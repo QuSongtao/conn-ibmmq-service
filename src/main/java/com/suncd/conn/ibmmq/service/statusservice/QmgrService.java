@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface QmgrService {
 
-    int getLocalQueueDepth(String qName);
+    String getLocalQueueDepth(String qName);
 
     int getChannelStatus(String channelName);
 

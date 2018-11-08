@@ -3,7 +3,7 @@ package com.suncd.conn.ibmmq.entity;
 import java.io.Serializable;
 
 /**
- * @author 
+ * @author
  */
 public class ConnConfObject implements Serializable {
     /**
@@ -35,6 +35,16 @@ public class ConnConfObject implements Serializable {
      * 远程系统名称
      */
     private String remoteSystem;
+
+    private String objStatus;
+
+    public String getObjStatus() {
+        return objStatus;
+    }
+
+    public void setObjStatus(String objStatus) {
+        this.objStatus = objStatus;
+    }
 
     private static final long serialVersionUID = 1L;
 

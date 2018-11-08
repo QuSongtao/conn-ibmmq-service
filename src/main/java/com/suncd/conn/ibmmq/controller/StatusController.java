@@ -1,10 +1,8 @@
-/*
-成都太阳高科技有限责任公司
-http://www.suncd.com
-*/
 package com.suncd.conn.ibmmq.controller;
 
+import com.suncd.conn.ibmmq.service.statusservice.ConnObjectService;
 import com.suncd.conn.ibmmq.service.statusservice.QmgrService;
+import com.suncd.conn.ibmmq.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,26 +11,30 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/mq")
+@RequestMapping("/mq/status")
 public class StatusController {
 
     @Autowired
     private QmgrService qmgrService;
+    @Autowired
+    private ConnObjectService connObjectService;
 
-    @RequestMapping(value = "/channel/status",method = RequestMethod.GET)
-    public String getChlStatus(String channelName){
-        int code = qmgrService.getChannelStatus(channelName);
-        return "通道状态:" + code;
+    @RequestMapping(value = "/channel", method = RequestMethod.GET)
+    public Response getChlStatus(int pageIndex, int pageSize) {
+        return connObjectService.getObjByType("CHANNEL", null, pageIndex, pageSize);
+
     }
 
-    @RequestMapping(value = "/queue/depth",method = RequestMethod.GET)
-    public String getQueueStatus(String qName){
-        int code = qmgrService.getLocalQueueDepth(qName);
-        return "队列深度:" + code;
+    /**
+     * 队列只取本地队列
+     */
+    @RequestMapping(value = "/queue", method = RequestMethod.GET)
+    public Response getQueueStatus(int pageIndex, int pageSize) {
+        return connObjectService.getObjByType("QUEUE", "R", pageIndex, pageSize);
     }
 
-    @RequestMapping(value = "/qmgr/status",method = RequestMethod.GET)
-    public Map getQmgrStatus(){
+    @RequestMapping(value = "/qmgr", method = RequestMethod.GET)
+    public Map getQmgrStatus() {
         return qmgrService.getQmgrStatus();
     }
 }

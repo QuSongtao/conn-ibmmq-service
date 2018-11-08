@@ -48,7 +48,7 @@ public class QmgrServiceImp implements QmgrService {
      * @return 队列深度
      */
     @Override
-    public int getLocalQueueDepth(String qName) {
+    public String getLocalQueueDepth(String qName) {
         checkQmgr();
         int qOption = CMQC.MQOO_FAIL_IF_QUIESCING | CMQC.MQOO_INQUIRE | CMQC.MQOO_BROWSE;
         MQQueue queue;
@@ -56,11 +56,11 @@ public class QmgrServiceImp implements QmgrService {
             queue = mqQueueManager.accessQueue(qName, qOption);
             int depth = queue.getCurrentDepth();
             queue.close();
-            return depth;
+            return depth + "条";
         } catch (MQException e) {
             LOGGER.error(e.getMessage());
             reconnect(e);
-            return -1;
+            return "未知";
         }
     }
 
