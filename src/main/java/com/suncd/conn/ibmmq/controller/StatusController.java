@@ -20,9 +20,8 @@ public class StatusController {
     private ConnObjectService connObjectService;
 
     @RequestMapping(value = "/channel", method = RequestMethod.GET)
-    public Response getChlStatus(int pageIndex, int pageSize) {
-        return connObjectService.getObjByType("CHANNEL", null, pageIndex, pageSize);
-
+    public Response getChlStatus(String transferType, int pageIndex, int pageSize) {
+        return connObjectService.getObjByType("CHANNEL", transferType, pageIndex, pageSize);
     }
 
     /**
