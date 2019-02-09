@@ -129,7 +129,7 @@ public class QmgrServiceImp implements QmgrService {
      * @param e MQException
      */
     private void reconnect(MQException e) {
-        if (e.getReason() == 2009) {
+        if (e.getReason() == 2009 || e.getReason() == 2017) {
             this.mqQueueManager = qmgrFactory.createMqQueueManager();
         }
     }
@@ -140,7 +140,7 @@ public class QmgrServiceImp implements QmgrService {
      * @param e MQDataException
      */
     private void reconnect(MQDataException e) {
-        if (e.getReason() == 2009) {
+        if (e.getReason() == 2009 || e.getReason() == 2017) {
             this.mqQueueManager = qmgrFactory.createMqQueueManager();
         }
     }
