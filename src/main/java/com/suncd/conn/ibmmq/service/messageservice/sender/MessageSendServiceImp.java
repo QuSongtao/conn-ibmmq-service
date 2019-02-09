@@ -49,7 +49,7 @@ public class MessageSendServiceImp implements MessageSendService {
 
     @PostConstruct
     public void testSend() {
-        sendMessage("WIN.LUX.Q", "cgx中文123");
+        sendMessage("WIN.LUX.Q", "cgx22222222222222222中文1233333333333333333333333333");
     }
 
     @Scheduled(fixedDelay = 5000)

@@ -84,27 +84,31 @@ public class ReceiveMessage extends MessageListenerAdapter {
             telId = recvStrMsg.substring(0, 10);
         }
 
-        // 3.插入接收消息表
-        String msgId = UUID.randomUUID().toString();
-        ConnRecvMsg connRecvMsg = new ConnRecvMsg();
-        connRecvMsg.setId(msgId);
-        connRecvMsg.setMsgTxt(recvStrMsg);
-        connRecvMsg.setCreateTime(new Date());
-        connRecvMsgDao.insertSelective(connRecvMsg);
+        try {
+            // 3.插入接收消息表
+            String msgId = UUID.randomUUID().toString();
+            ConnRecvMsg connRecvMsg = new ConnRecvMsg();
+            connRecvMsg.setId(msgId);
+            connRecvMsg.setMsgTxt(recvStrMsg);
+            connRecvMsg.setCreateTime(new Date());
+            connRecvMsgDao.insertSelective(connRecvMsg);
 
-        // 4.插入接收总表
-        String mainId = UUID.randomUUID().toString();
-        ConnRecvMain connRecvMain = new ConnRecvMain();
-        connRecvMain.setId(mainId);
-        connRecvMain.setDealFlag("0");
-        connRecvMain.setMsgId(msgId);
-        connRecvMain.setTelId(telId);
-        connRecvMain.setRecvTime(new Date());
-        connRecvMain.setTelType("MQ");
-        connRecvMainDao.insertSelective(connRecvMain);
+            // 4.插入接收总表
+            String mainId = UUID.randomUUID().toString();
+            ConnRecvMain connRecvMain = new ConnRecvMain();
+            connRecvMain.setId(mainId);
+            connRecvMain.setDealFlag("0");
+            connRecvMain.setMsgId(msgId);
+            connRecvMain.setTelId(telId);
+            connRecvMain.setRecvTime(new Date());
+            connRecvMain.setTelType("MQ");
+            connRecvMainDao.insertSelective(connRecvMain);
 
-        // 5.更新统计表
-        connTotalNumDao.updateTotalNum(totalType);
+            // 5.更新统计表
+            connTotalNumDao.updateTotalNum(totalType);
+        }catch (Exception e){
+            WARN_LOGGER.error("MQ消息处理出现异常:",e);
+        }
     }
 
     @Override
