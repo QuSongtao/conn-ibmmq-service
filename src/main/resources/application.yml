@@ -1,13 +1,13 @@
 server:
-  port: 8081
+  port: 8082
 
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@192.168.1.65:1521:orcl
-    username: CONN
-    password: 123456
+    url: jdbc:oracle:thin:@${ORACLE_URL:192.168.1.65:1521:orcl}
+    username: ${ORACLE_USERNAME:CONN}
+    password: ${ORACLE_PASSWORD:123456}
     hikari:
       maximum-pool-size: 20
       minimum-idle: 10
@@ -18,15 +18,15 @@ spring:
 
 ibm:
   mq:
-    queue-manager: TEST.QM
-    conn-name: 192.168.1.66(1414)
+    queue-manager: ${IBM_MQ_QMGR:TEST.QM}
+    conn-name: ${IBM_MQ_HOST:192.168.1.66}(${IBM_MQ_PORT:1414})
     channel: SYSTEM.DEF.SVRCONN
     user: mqm
 #    user: MUSR_MQADMIN
-    password: mqm
+    password: ${IBM_MQ_MQM_PASSWORD:mqm}
     client-id: ansteelmql3
-    hostDef: 192.168.1.66
-    portDef: 1414
+    hostDef: ${IBM_MQ_HOST:192.168.1.66}
+    portDef: ${IBM_MQ_PORT:1414}
     ccsidDef: 1381
   recv:
     queue:
