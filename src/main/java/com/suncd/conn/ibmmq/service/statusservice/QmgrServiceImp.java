@@ -60,7 +60,7 @@ public class QmgrServiceImp implements QmgrService {
         } catch (MQException e) {
             LOGGER.error(e.getMessage());
             reconnect(e);
-            return "未知";
+            return "队列:"+qName+"深度未知";
         }
     }
 
@@ -85,7 +85,7 @@ public class QmgrServiceImp implements QmgrService {
             pcfRequest.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, channelName);
             PCFMessage[] response = agent.send(pcfRequest);
             int channelStatus = response[0].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
-            LOGGER.info("通道状态:{}", channelStatus);
+            LOGGER.info("通道:{} 状态:{}", channelName,channelStatus);
             agent.disconnect();
             return channelStatus;
         } catch (IOException e) {
