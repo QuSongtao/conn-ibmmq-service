@@ -58,9 +58,9 @@ public class QmgrServiceImp implements QmgrService {
             queue.close();
             return depth + "条";
         } catch (MQException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("队列:{},深度未知:{}",qName,e.getMessage());
             reconnect(e);
-            return "队列:"+qName+"深度未知";
+            return "未知";
         }
     }
 
@@ -85,14 +85,14 @@ public class QmgrServiceImp implements QmgrService {
             pcfRequest.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, channelName);
             PCFMessage[] response = agent.send(pcfRequest);
             int channelStatus = response[0].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
-            LOGGER.info("通道:{} 状态:{}", channelName,channelStatus);
+            LOGGER.debug("通道:{} 状态:{}", channelName,channelStatus);
             agent.disconnect();
             return channelStatus;
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.warn("通道:{},状态异常:{}",channelName,e.getMessage());
             return -9;
         } catch (MQDataException eh) {
-            LOGGER.error(eh.getMessage());
+            LOGGER.warn("通道:{},状态异常:{}",channelName,eh.getMessage());
             reconnect(eh);
             return -1;
         }
