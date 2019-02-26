@@ -101,7 +101,7 @@ public class QmgrServiceImp implements QmgrService {
                     agent.disconnect();
                 }
             } catch (MQDataException e) {
-
+                LOGGER.warn("PCFMessageAgent主动断开出现异常,可忽略!");
             }
         }
         return channelStatus;
