@@ -13,7 +13,7 @@ import org.springframework.jms.core.JmsOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+//import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -47,10 +47,10 @@ public class MessageSendServiceImp implements MessageSendService {
         jmsOperations.convertAndSend(destinationName, msgBuf);
     }
 
-    @PostConstruct
-    public void testSend() {
-        sendMessage("WIN.LUX.Q", "cgx22222222222222222中文1233333333333333333333333333");
-    }
+//    @PostConstruct
+//    public void testSend() {
+//        sendMessage("WIN.LUX.Q", "cgx22222222222222222中文1233333333333333333333333333");
+//    }
 
     @Scheduled(fixedDelay = 5000)
     public void circleSend() {
