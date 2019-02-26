@@ -58,7 +58,7 @@ public class QmgrServiceImp implements QmgrService {
             queue.close();
             return depth + "条";
         } catch (MQException e) {
-            LOGGER.error("队列:{},深度未知:{}",qName,e.getMessage());
+            LOGGER.error("队列:{},深度未知:{}", qName, e.getMessage());
             reconnect(e);
             return "未知";
         }
@@ -79,23 +79,32 @@ public class QmgrServiceImp implements QmgrService {
     @Override
     public int getChannelStatus(String channelName) {
         checkQmgr();
+        PCFMessageAgent agent = null;
+        int channelStatus;
         try {
-            PCFMessageAgent agent = new PCFMessageAgent(mqQueueManager);
+            agent = new PCFMessageAgent(mqQueueManager);
             PCFMessage pcfRequest = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
             pcfRequest.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, channelName);
             PCFMessage[] response = agent.send(pcfRequest);
-            int channelStatus = response[0].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
-            LOGGER.debug("通道:{} 状态:{}", channelName,channelStatus);
-            agent.disconnect();
-            return channelStatus;
+            channelStatus = response[0].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
+            LOGGER.debug("通道:{} 状态:{}", channelName, channelStatus);
         } catch (IOException e) {
-            LOGGER.warn("通道:{},状态异常:{}",channelName,e.getMessage());
-            return -9;
+            LOGGER.warn("通道:{},状态异常:{}", channelName, e.getMessage());
+            channelStatus = -9;
         } catch (MQDataException eh) {
-            LOGGER.warn("通道:{},状态异常:{}",channelName,eh.getMessage());
+            LOGGER.warn("通道:{},状态异常:{}", channelName, eh.getMessage());
             reconnect(eh);
-            return -1;
+            channelStatus = -1;
+        } finally {
+            try {
+                if (null != agent) {
+                    agent.disconnect();
+                }
+            } catch (MQDataException e) {
+
+            }
         }
+        return channelStatus;
     }
 
     /**
