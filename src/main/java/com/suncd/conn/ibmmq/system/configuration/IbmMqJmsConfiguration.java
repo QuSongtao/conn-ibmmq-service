@@ -79,7 +79,7 @@ public class IbmMqJmsConfiguration {
     public JmsOperations jmsOperations(MQConnectionFactory mqConnectionFactory) {
         JmsTemplate jmsTemplate = new JmsTemplate(mqConnectionFactory);
         jmsTemplate.setReceiveTimeout(20000);
-        LOGGER.warn("初始化JMS模板完成!");
+        LOGGER.info("初始化JMS模板完成!");
         return jmsTemplate;
     }
 

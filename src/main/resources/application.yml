@@ -30,7 +30,26 @@ ibm:
     ccsidDef: 1381
   recv:
     queue:
-      q1: WIN.LUX.Q
+      # 本地监听队列列表
+      2130_CR_M_1: 2130.CR.M.1          # 冷轧2130线----------MES
+      2150_CR_M_1: 2150.CR.M.1          # 热轧2150线
+      ASP_1700_CR_M_1: ASP_1700.CR.M.1  # 热轧1700线
+      HR_1780_CR_M_1: HR_1780.CR.M.1    # 热轧1780线
+      LZ4M1_CR_M_1: LZ4M1.CR.M.1        # 冷轧1450线
+      TEST_CR: TEST.CR                  # 检化验系统
+      ASL_CR_Q: ASL.CR.Q                # 冷轧鞍神高强线
+      ERP_CR_O_OK28: ERP.CR.O.OK28      # 产销ERP系统 --------ERP
+      ERP_CR_O_OL28: ERP.CR.O.OL28      # 产销ERP系统
+      ERP_CR_O_OO28: ERP.CR.O.OO28      # 产销ERP系统
+      ERP_CR_Q_1: ERP.CR.Q.1            # 产销ERP系统
+      ERP_CR_Q_2: ERP.CR.Q.2            # 产销ERP系统
+      ERP_CR_W_BUL: ERP.CR.W.BUL        # 产销ERP系统
+      ERP_CR_W_OTHER: ERP.CR.W.OTHER    # 产销ERP系统
+      GAL1_CR_Q: GAL1.CR.Q              # 冷轧1#镀锌线---------L2
+      GAL3_CR_Q: GAL3.CR.Q              # 冷轧3#镀锌线
+      CF_CR_Q: CF.CR.Q                  # 冷轧1#线清洗机组
+      PCSAW_CR_Q: PCSAW.CR.Q            # 冷轧1#线酸洗机组
+      CC_CR_M_1: CC.CR.M.1              # 冷轧彩涂线
 
 logging.level.com.suncd.conn.manager.dao: debug
 spring.jackson.date-format: yyyy-MM-dd HH:mm:ss
