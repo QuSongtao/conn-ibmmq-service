@@ -21,10 +21,8 @@ public class QmgrFactory {
 
     @Value("${ibm.mq.queue-manager}")
     private String qmName;
-    @Value("${ibm.mq.hostDef}")
-    private String host;
-    @Value("${ibm.mq.portDef}")
-    private int port;
+    @Value("${ibm.mq.conn-name}")
+    private String hostPort;
     @Value("${ibm.mq.channel}")
     private String channel;
     @Value("${ibm.mq.user}")
@@ -35,8 +33,8 @@ public class QmgrFactory {
     private int ccsid;
 
     public MQQueueManager createMqQueueManager(){
-        MQEnvironment.hostname = host;
-        MQEnvironment.port = port;
+        MQEnvironment.hostname = hostPort.split("\\(")[0];
+        MQEnvironment.port = Integer.parseInt(hostPort.split("\\(")[1].substring(0,hostPort.split("\\(")[1].length() - 1));
         MQEnvironment.userID = user;
         MQEnvironment.password = password;
         MQEnvironment.channel = channel;

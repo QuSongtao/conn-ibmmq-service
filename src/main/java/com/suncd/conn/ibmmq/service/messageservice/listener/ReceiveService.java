@@ -36,7 +36,15 @@ public class ReceiveService {
     @Autowired
     private ConnTotalNumDao connTotalNumDao;
 
-    public void dealMessage(Message message) {
+    /**
+     * 接收消息核心处理逻辑
+     *
+     * @param message  消息体
+     * @param sysCode  系统编码
+     */
+    public void dealMessage(Message message,String sysCode) {
+        // 0. 根据sysCode查找对应的中文名称
+        // todo
         // 1.监听并读取消息
         String recvStrMsg = "";
         if (message instanceof JMSBytesMessage) {

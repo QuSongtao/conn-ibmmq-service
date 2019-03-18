@@ -1,7 +1,4 @@
-/*
-成都太阳高科技有限责任公司
-http://www.suncd.com
-*/
+
 package com.suncd.conn.ibmmq.system.configuration;
 
 
@@ -13,7 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.JmsTemplate;
 
-@Configuration
+/**
+ * (废弃)
+ */
+//@Configuration
 public class IbmMqJmsConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(IbmMqJmsConfiguration.class);
 

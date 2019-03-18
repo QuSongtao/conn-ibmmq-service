@@ -1,5 +1,6 @@
 package com.suncd.conn.ibmmq.service.messageservice.listener;
 
+import com.suncd.conn.ibmmq.system.constants.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class MessageListenerERP extends MessageListenerAdapter {
             @JmsListener(destination = "${ibm.recv.queue.ERP_CR_W_OTHER}")
     })
     public void onMessage(Message message) {
-        receiveService.dealMessage(message);
+        receiveService.dealMessage(message, Constant.ERP_CODE);
     }
 
     @Override
