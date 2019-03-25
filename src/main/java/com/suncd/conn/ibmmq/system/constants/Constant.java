@@ -14,8 +14,17 @@ public class Constant {
     // 队列管理器状态 0-停止 1-运行
     public static int QMGR_STATUS = 0;
 
+    // 通信方式
+    public static String CONN_MQ = "MQ";    // MQ通信
+    public static String CONN_SK = "SK";    // Socket通信
+
+    // MQ通信协议
+    public static String MQ_JMS = "JMS";    // JMS协议
+    public static String MQ_PTP = "PTP";    // PTP协议
+
     // 各通信系统编码
     public static String ERP_CODE = "L4";    // 产销ERP
+    public static String MES_CR = "CR";      // 冷轧1#MES
     public static String MES_2130 = "2130";  // 2130
     public static String MES_2150 = "2150";  // 2150
     public static String MES_1700 = "1700";  // 1700

@@ -8,15 +8,7 @@ import java.util.List;
 public interface ConnSendMainDao {
     int deleteByPrimaryKey(String id);
 
-    int insert(ConnSendMain record);
+//    List<ConnSendMain> selectBySendFlag(@Param("sendFlag") String sendFlag, @Param("telType")String telType);
+    List<ConnSendMain> selectAll();
 
-    int insertSelective(ConnSendMain record);
-
-    ConnSendMain selectByPrimaryKey(String id);
-
-    List<ConnSendMain> selectBySendFlag(@Param("sendFlag") String sendFlag, @Param("telType")String telType);
-
-    int updateByPrimaryKeySelective(ConnSendMain record);
-
-    int updateByPrimaryKey(ConnSendMain record);
 }

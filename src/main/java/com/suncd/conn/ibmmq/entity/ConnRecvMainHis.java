@@ -13,14 +13,14 @@ public class ConnRecvMainHis implements Serializable {
     private String id;
 
     /**
-     * 电文ID-10位
+     * 电文ID-20位
      */
     private String telId;
 
-    /**
-     * 电文类型：SK-socket通信 ，MQ-mq通信
-     */
-    private String telType;
+    private String sender;
+    private String senderName;
+    private String receiver;
+    private String receiverName;
 
     /**
      * 消息ID,对应conn_recv_msg.id
@@ -65,12 +65,36 @@ public class ConnRecvMainHis implements Serializable {
         this.telId = telId;
     }
 
-    public String getTelType() {
-        return telType;
+    public String getSender() {
+        return sender;
     }
 
-    public void setTelType(String telType) {
-        this.telType = telType;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 
     public String getMsgId() {

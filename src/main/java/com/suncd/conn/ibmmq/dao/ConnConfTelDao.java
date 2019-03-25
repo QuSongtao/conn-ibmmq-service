@@ -1,18 +1,10 @@
 package com.suncd.conn.ibmmq.dao;
 
 import com.suncd.conn.ibmmq.entity.ConnConfTel;
+import org.apache.ibatis.annotations.Param;
 
 public interface ConnConfTelDao {
-    int deleteByPrimaryKey(String id);
 
-    int insert(ConnConfTel record);
+    ConnConfTel selectQueueName(@Param("telId") String telId, @Param("sender") String sender, @Param("receiver") String receiver);
 
-    int insertSelective(ConnConfTel record);
-
-    ConnConfTel selectByPrimaryKey(String id);
-    ConnConfTel selectQueueName(String telId);
-
-    int updateByPrimaryKeySelective(ConnConfTel record);
-
-    int updateByPrimaryKey(ConnConfTel record);
 }

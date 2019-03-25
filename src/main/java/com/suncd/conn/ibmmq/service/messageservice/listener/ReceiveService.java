@@ -1,11 +1,14 @@
 package com.suncd.conn.ibmmq.service.messageservice.listener;
 
 import com.ibm.jms.JMSBytesMessage;
+import com.suncd.conn.ibmmq.dao.ConnConfSyscodeDao;
 import com.suncd.conn.ibmmq.dao.ConnRecvMainDao;
 import com.suncd.conn.ibmmq.dao.ConnRecvMsgDao;
 import com.suncd.conn.ibmmq.dao.ConnTotalNumDao;
+import com.suncd.conn.ibmmq.entity.ConnConfSyscode;
 import com.suncd.conn.ibmmq.entity.ConnRecvMain;
 import com.suncd.conn.ibmmq.entity.ConnRecvMsg;
+import com.suncd.conn.ibmmq.system.constants.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,8 @@ public class ReceiveService {
     private ConnRecvMsgDao connRecvMsgDao;
     @Autowired
     private ConnTotalNumDao connTotalNumDao;
+    @Autowired
+    private ConnConfSyscodeDao connConfSyscodeDao;
 
     /**
      * 接收消息核心处理逻辑
@@ -44,7 +49,9 @@ public class ReceiveService {
      */
     public void dealMessage(Message message,String sysCode) {
         // 0. 根据sysCode查找对应的中文名称
-        // todo
+        ConnConfSyscode connConfSyscode = connConfSyscodeDao.selectBySysCode(sysCode);
+        ConnConfSyscode connConfSyscodeCr = connConfSyscodeDao.selectBySysCode(Constant.MES_CR);
+
         // 1.监听并读取消息
         String recvStrMsg = "";
         if (message instanceof JMSBytesMessage) {
@@ -90,11 +97,13 @@ public class ReceiveService {
             String mainId = UUID.randomUUID().toString();
             ConnRecvMain connRecvMain = new ConnRecvMain();
             connRecvMain.setId(mainId);
-            connRecvMain.setDealFlag("0");
             connRecvMain.setMsgId(msgId);
             connRecvMain.setTelId(telId);
             connRecvMain.setRecvTime(new Date());
-            connRecvMain.setTelType("MQ");
+            connRecvMain.setSender(connConfSyscode.getSysCode());
+            connRecvMain.setSenderName(connConfSyscode.getSysName());
+            connRecvMain.setReceiver(connConfSyscodeCr.getSysCode());
+            connRecvMain.setReceiverName(connConfSyscodeCr.getSysName());
             connRecvMainDao.insertSelective(connRecvMain);
 
             // 5.更新统计表

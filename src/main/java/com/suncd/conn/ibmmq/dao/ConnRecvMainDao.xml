@@ -4,42 +4,34 @@
   <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnRecvMain">
     <id column="id" jdbcType="CHAR" property="id" />
     <result column="telId" jdbcType="VARCHAR" property="telId" />
-    <result column="telType" jdbcType="CHAR" property="telType" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="senderName" jdbcType="VARCHAR" property="senderName" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="receiverName" jdbcType="VARCHAR" property="receiverName" />
     <result column="msgId" jdbcType="CHAR" property="msgId" />
     <result column="recvTime" jdbcType="TIMESTAMP" property="recvTime" />
-    <result column="dealFlag" jdbcType="CHAR" property="dealFlag" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, telId, telType, msgId, recvTime, dealFlag
+    id, telId, sender,senderName,receiver,receiverName, msgId, recvTime
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from conn_recv_main
-    where id = #{id,jdbcType=CHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from conn_recv_main
-    where id = #{id,jdbcType=CHAR}
-  </delete>
-  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMain">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into conn_recv_main (telId, telType, msgId, 
-      recvTime, dealFlag)
-    values (#{telId,jdbcType=VARCHAR}, #{telType,jdbcType=CHAR}, #{msgId,jdbcType=CHAR}, 
-      #{recvTime,jdbcType=TIMESTAMP}, #{dealFlag,jdbcType=CHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMain">
+  <insert id="insertSelective" parameterType="com.suncd.conn.manager.entity.ConnRecvMain">
     insert into conn_recv_main
     <trim prefix="(" suffix=")" suffixOverrides=",">
       id,
       <if test="telId != null">
         telId,
       </if>
-      <if test="telType != null">
-        telType,
+      <if test="sender != null">
+        sender,
+      </if>
+      <if test="senderName != null">
+        senderName,
+      </if>
+      <if test="receiver != null">
+        receiver,
+      </if>
+      <if test="receiverName != null">
+        receiverName,
       </if>
       <if test="msgId != null">
         msgId,
@@ -47,17 +39,23 @@
       <if test="recvTime != null">
         recvTime,
       </if>
-      <if test="dealFlag != null">
-        dealFlag,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       #{id,jdbcType=CHAR},
       <if test="telId != null">
         #{telId,jdbcType=VARCHAR},
       </if>
-      <if test="telType != null">
-        #{telType,jdbcType=CHAR},
+      <if test="sender != null">
+        #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="senderName != null">
+        #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null">
+        #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverName != null">
+        #{receiverName,jdbcType=VARCHAR},
       </if>
       <if test="msgId != null">
         #{msgId,jdbcType=CHAR},
@@ -65,39 +63,6 @@
       <if test="recvTime != null">
         #{recvTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dealFlag != null">
-        #{dealFlag,jdbcType=CHAR},
-      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMain">
-    update conn_recv_main
-    <set>
-      <if test="telId != null">
-        telId = #{telId,jdbcType=VARCHAR},
-      </if>
-      <if test="telType != null">
-        telType = #{telType,jdbcType=CHAR},
-      </if>
-      <if test="msgId != null">
-        msgId = #{msgId,jdbcType=CHAR},
-      </if>
-      <if test="recvTime != null">
-        recvTime = #{recvTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="dealFlag != null">
-        dealFlag = #{dealFlag,jdbcType=CHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=CHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMain">
-    update conn_recv_main
-    set telId = #{telId,jdbcType=VARCHAR},
-      telType = #{telType,jdbcType=CHAR},
-      msgId = #{msgId,jdbcType=CHAR},
-      recvTime = #{recvTime,jdbcType=TIMESTAMP},
-      dealFlag = #{dealFlag,jdbcType=CHAR}
-    where id = #{id,jdbcType=CHAR}
-  </update>
 </mapper>

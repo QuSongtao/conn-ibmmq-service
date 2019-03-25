@@ -13,24 +13,19 @@ public class ConnSendMain implements Serializable {
     private String id;
 
     /**
-     * 电文ID-10位
+     * 电文ID-20位
      */
     private String telId;
 
-    /**
-     * 电文类型：SK-socket通信 ，MQ-mq通信
-     */
-    private String telType;
+    private String sender;
+    private String senderName;
+    private String receiver;
+    private String receiverName;
 
     /**
      * 消息ID
      */
     private String msgId;
-
-    /**
-     * 发送标识:0-未发送,1-已发送,默认值0
-     */
-    private String sendFlag;
 
     /**
      * 记录创建时间
@@ -46,11 +41,6 @@ public class ConnSendMain implements Serializable {
      * 【socket通信使用】推送序号-5位循环
      */
     private Integer pushSeqNo;
-
-    /**
-     * 消息发送时间
-     */
-    private Date sendTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -70,28 +60,12 @@ public class ConnSendMain implements Serializable {
         this.telId = telId;
     }
 
-    public String getTelType() {
-        return telType;
-    }
-
-    public void setTelType(String telType) {
-        this.telType = telType;
-    }
-
     public String getMsgId() {
         return msgId;
     }
 
     public void setMsgId(String msgId) {
         this.msgId = msgId;
-    }
-
-    public String getSendFlag() {
-        return sendFlag;
-    }
-
-    public void setSendFlag(String sendFlag) {
-        this.sendFlag = sendFlag;
     }
 
     public Date getCreateTime() {
@@ -118,11 +92,35 @@ public class ConnSendMain implements Serializable {
         this.pushSeqNo = pushSeqNo;
     }
 
-    public Date getSendTime() {
-        return sendTime;
+    public String getSender() {
+        return sender;
     }
 
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

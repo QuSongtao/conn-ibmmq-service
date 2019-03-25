@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suncd.conn.ibmmq.dao.ConnConfDictDao">
+  <resultMap id="BaseResultMap" type="com.suncd.conn.ibmmq.entity.ConnConfDict">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="typeCode" jdbcType="CHAR" property="typeCode" />
+    <result column="typeName" jdbcType="VARCHAR" property="typeName" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, typeCode, typeName, code, name, des
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conn_conf_dict
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from conn_conf_dict
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnConfDict">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_dict (typeCode, typeName, code, 
+      name, des)
+    values (#{typeCode,jdbcType=CHAR}, #{typeName,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfDict">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into conn_conf_dict
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="typeCode != null">
+        typeCode,
+      </if>
+      <if test="typeName != null">
+        typeName,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="des != null">
+        des,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="typeCode != null">
+        #{typeCode,jdbcType=CHAR},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="des != null">
+        #{des,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfDict">
+    update conn_conf_dict
+    <set>
+      <if test="typeCode != null">
+        typeCode = #{typeCode,jdbcType=CHAR},
+      </if>
+      <if test="typeName != null">
+        typeName = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="des != null">
+        des = #{des,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnConfDict">
+    update conn_conf_dict
+    set typeCode = #{typeCode,jdbcType=CHAR},
+      typeName = #{typeName,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      des = #{des,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

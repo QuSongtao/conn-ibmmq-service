@@ -22,19 +22,13 @@ public class ConnConfTel implements Serializable {
     private String telName;
 
     /**
-     * 收发类型: S-发送 R-接收
-     */
-    private String transferType;
-
-    /**
-     * 【收发类型=S时配置生效】队列名称
+     * 队列名称
      */
     private String queueName;
-
-    /**
-     * 远程系统名称
-     */
-    private String remoteSystem;
+    private String sender;
+    private String senderName;
+    private String receiver;
+    private String receiverName;
 
     private static final long serialVersionUID = 1L;
 
@@ -62,14 +56,6 @@ public class ConnConfTel implements Serializable {
         this.telName = telName;
     }
 
-    public String getTransferType() {
-        return transferType;
-    }
-
-    public void setTransferType(String transferType) {
-        this.transferType = transferType;
-    }
-
     public String getQueueName() {
         return queueName;
     }
@@ -78,11 +64,35 @@ public class ConnConfTel implements Serializable {
         this.queueName = queueName;
     }
 
-    public String getRemoteSystem() {
-        return remoteSystem;
+    public String getSender() {
+        return sender;
     }
 
-    public void setRemoteSystem(String remoteSystem) {
-        this.remoteSystem = remoteSystem;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

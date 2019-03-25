@@ -13,14 +13,9 @@ public class ConnRecvMain implements Serializable {
     private String id;
 
     /**
-     * 电文ID-10位
+     * 电文ID-20位
      */
     private String telId;
-
-    /**
-     * 电文类型：SK-socket通信 ，MQ-mq通信
-     */
-    private String telType;
 
     /**
      * 消息ID,对应conn_recv_msg.id
@@ -32,10 +27,10 @@ public class ConnRecvMain implements Serializable {
      */
     private Date recvTime;
 
-    /**
-     * 业务处理标识:0-未处理,1-已处理
-     */
-    private String dealFlag;
+    private String sender;
+    private String senderName;
+    private String receiver;
+    private String receiverName;
 
     private static final long serialVersionUID = 1L;
 
@@ -55,14 +50,6 @@ public class ConnRecvMain implements Serializable {
         this.telId = telId;
     }
 
-    public String getTelType() {
-        return telType;
-    }
-
-    public void setTelType(String telType) {
-        this.telType = telType;
-    }
-
     public String getMsgId() {
         return msgId;
     }
@@ -79,11 +66,35 @@ public class ConnRecvMain implements Serializable {
         this.recvTime = recvTime;
     }
 
-    public String getDealFlag() {
-        return dealFlag;
+    public String getSender() {
+        return sender;
     }
 
-    public void setDealFlag(String dealFlag) {
-        this.dealFlag = dealFlag;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }
