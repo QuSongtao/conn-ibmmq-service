@@ -26,7 +26,7 @@ ibm:
     password: ${IBM_MQ_MQM_PASSWORD:mqm}
     ccsidDef: 1381
 
-logging.level.com.suncd.conn.ibmmq.dao: debug
+logging.level.com.suncd.conn.ibmmq.dao: info
 spring.jackson.date-format: yyyy-MM-dd HH:mm:ss
 spring.jackson.time-zone: GMT+8
 
