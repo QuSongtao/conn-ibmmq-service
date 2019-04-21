@@ -14,7 +14,7 @@
   <sql id="Base_Column_List">
     id, telId, sender,senderName,receiver,receiverName, msgId, recvTime
   </sql>
-  <insert id="insertSelective" parameterType="com.suncd.conn.manager.entity.ConnRecvMain">
+  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnRecvMain">
     insert into conn_recv_main
     <trim prefix="(" suffix=")" suffixOverrides=",">
       id,

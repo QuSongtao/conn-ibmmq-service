@@ -28,13 +28,13 @@ public class MessageListenerERP extends MessageListenerAdapter {
 
     @Override
     @JmsListeners(value = {
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_O_OK28}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_O_OL28}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_O_OO28}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_Q_1}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_Q_2}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_W_BUL}"),
-            @JmsListener(destination = "${ibm.recv.queue.ERP_CR_W_OTHER}")
+            @JmsListener(destination = "ERP.CR.O.OK28"),
+            @JmsListener(destination = "ERP.CR.O.OL28"),
+            @JmsListener(destination = "ERP.CR.O.OO28"),
+            @JmsListener(destination = "ERP.CR.Q.1"),
+            @JmsListener(destination = "ERP.CR.Q.2"),
+            @JmsListener(destination = "ERP.CR.W.BUL"),
+            @JmsListener(destination = "ERP.CR.W.OTHER")
     })
     public void onMessage(Message message) {
         receiveService.dealMessage(message, Constant.ERP_CODE);

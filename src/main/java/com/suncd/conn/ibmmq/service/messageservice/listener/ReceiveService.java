@@ -100,10 +100,18 @@ public class ReceiveService {
             connRecvMain.setMsgId(msgId);
             connRecvMain.setTelId(telId);
             connRecvMain.setRecvTime(new Date());
-            connRecvMain.setSender(connConfSyscode.getSysCode());
-            connRecvMain.setSenderName(connConfSyscode.getSysName());
-            connRecvMain.setReceiver(connConfSyscodeCr.getSysCode());
-            connRecvMain.setReceiverName(connConfSyscodeCr.getSysName());
+            if(null != connConfSyscode){
+                connRecvMain.setSender(connConfSyscode.getSysCode());
+                connRecvMain.setSenderName(connConfSyscode.getSysName());
+            }else{
+                connRecvMain.setSenderName("未配置");
+            }
+            if(null != connConfSyscodeCr) {
+                connRecvMain.setReceiver(connConfSyscodeCr.getSysCode());
+                connRecvMain.setReceiverName(connConfSyscodeCr.getSysName());
+            }else{
+                connRecvMain.setReceiverName("未配置");
+            }
             connRecvMainDao.insertSelective(connRecvMain);
 
             // 5.更新统计表

@@ -23,14 +23,14 @@ public class Constant {
     public static String MQ_PTP = "PTP";    // PTP协议
 
     // 各通信系统编码
-    public static String ERP_CODE = "L4";    // 产销ERP
+    public static String ERP_CODE = "ERP";   // 产销ERP
     public static String MES_CR = "CR";      // 冷轧1#MES
     public static String MES_2130 = "2130";  // 2130
     public static String MES_2150 = "2150";  // 2150
     public static String MES_1700 = "1700";  // 1700
     public static String MES_1780 = "1780";  // 1780
     public static String MES_1450 = "1450";  // 1450
-    public static String MES_TEST = "TEST";  // 检化验系统
+    public static String MES_TEST = "TST";   // 检化验系统
     public static String MES_ASL = "ASL";    // 鞍神高强线
     public static String L2_GAL1 = "GAL1";   // 1#镀锌
     public static String L2_GAL3 = "GAL3";   // 3#镀锌
