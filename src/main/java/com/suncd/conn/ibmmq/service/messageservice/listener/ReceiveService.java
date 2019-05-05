@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
@@ -61,6 +62,8 @@ public class ReceiveService {
                 buff = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(buff);
                 recvStrMsg = new String(buff);
+                String recv1 = new String(recvStrMsg.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                LOGGER.info("字节消息: " + recv1);
             } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
@@ -68,7 +71,9 @@ public class ReceiveService {
             TextMessage bm = (TextMessage) message;
             try {
                 recvStrMsg = bm.getText();
-            } catch (JMSException e) {
+                String recv1 = new String(recvStrMsg.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                LOGGER.info("文本消息: " + recv1);
+            } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
         }
