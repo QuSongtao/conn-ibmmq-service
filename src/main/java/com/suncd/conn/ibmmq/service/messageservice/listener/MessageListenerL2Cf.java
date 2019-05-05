@@ -27,7 +27,7 @@ public class MessageListenerL2Cf extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "CF.CR.Q")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.L2_CF);
+        receiveService.dealMessage(message, Constant.L2_CF, false, 4);
     }
 
     @Override
