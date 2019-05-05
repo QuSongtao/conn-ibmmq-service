@@ -43,7 +43,7 @@ public class MessageSendServiceImp implements MessageSendService {
     }
 
     @Override
-    public void sendMessageJMS(String destinationName, byte[] msgBuf, Map<String, Object> result) {
+    public void sendMessageJMS(String destinationName, String msgBuf, Map<String, Object> result) {
         // 所有消息转为字节发送
         try {
             jmsOperations.convertAndSend(destinationName, msgBuf);
@@ -59,7 +59,7 @@ public class MessageSendServiceImp implements MessageSendService {
     }
 
     @Override
-    public void sendMessagePTP(String destinationName, byte[] msgBuf, Map<String, Object> result) {
+    public void sendMessagePTP(String destinationName, String msgBuf, Map<String, Object> result) {
         messagePTPService.sendMessagePTP(destinationName, msgBuf, result);
     }
 
@@ -84,7 +84,7 @@ public class MessageSendServiceImp implements MessageSendService {
 
             // 2.组装消息和查找路由队列
             String queueName = getQueueName(connSendMain.getTelId(), connSendMain.getSender(), connSendMain.getReceiver());
-            byte[] msgBuf = getSendMsg(connSendMain.getMsgId());
+            String msgBuf = getSendMsg(connSendMain.getMsgId());
 
             // 3.发送消息
             sendToRemote(queueName, msgBuf, result);
@@ -118,11 +118,11 @@ public class MessageSendServiceImp implements MessageSendService {
      * @param msgId 消息id
      * @return 消息字节组
      */
-    private byte[] getSendMsg(String msgId) {
-        byte[] ret = null;
+    private String getSendMsg(String msgId) {
+        String ret = null;
         ConnSendMsg connSendMsg = connSendMsgDao.selectByPrimaryKey(msgId);
         if (null != connSendMsg && null != connSendMsg.getMsgTxt()) {
-            ret = connSendMsg.getMsgTxt().getBytes();
+            ret = connSendMsg.getMsgTxt();
         }
         if (ret == null) {
             CommonUtil.SYSLOGGER.warn("【警告】消息内容为空,消息表:CONN_SEND_MSG,主键:{}", msgId);
@@ -130,7 +130,7 @@ public class MessageSendServiceImp implements MessageSendService {
         return ret;
     }
 
-    private void sendToRemote(String queueName, byte[] msgBuf, Map<String, Object> result) {
+    private void sendToRemote(String queueName, String msgBuf, Map<String, Object> result) {
         if (queueName != null && msgBuf != null) {
             // 1.发送消息
             if ((boolean) result.get("isJMS")) {

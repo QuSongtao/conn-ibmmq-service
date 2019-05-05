@@ -7,6 +7,7 @@ import com.suncd.conn.ibmmq.utils.QmgrFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
@@ -82,7 +83,7 @@ public class MessagePTPService {
     }
 
     // todo=============
-    public void sendMessagePTP(String destinationName, byte[] msgBuf, Map<String, Object> result) {
+    public void sendMessagePTP(String destinationName, String msgBuf, Map<String, Object> result) {
         // 1.如果队列管理器为空,则从工厂进行创建
         if (null == this.mqQueueManager) {
             this.mqQueueManager = qmgrFactory.createMqQueueManager();
@@ -107,7 +108,7 @@ public class MessagePTPService {
 //            String msgString = msg;
             //转成字节流传输
 //            byte[] b = msgString.getBytes("GBK");
-            outMsg.write(msgBuf);
+            outMsg.write(msgBuf.getBytes("GBK"));
             /* 在队列上放置消息 */
             queue.put(outMsg, pmo);
             /* 提交事务 */
