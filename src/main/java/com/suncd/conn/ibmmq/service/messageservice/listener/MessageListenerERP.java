@@ -37,7 +37,7 @@ public class MessageListenerERP extends MessageListenerAdapter {
             @JmsListener(destination = "ERP.CR.W.OTHER")
     })
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.ERP_CODE);
+        receiveService.dealMessage(message, Constant.ERP_CODE, false, 10);
     }
 
     @Override

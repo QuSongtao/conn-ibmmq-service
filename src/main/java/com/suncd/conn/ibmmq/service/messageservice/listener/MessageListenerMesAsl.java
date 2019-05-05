@@ -27,7 +27,7 @@ public class MessageListenerMesAsl extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "ASL.CR.Q")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.MES_ASL);
+        receiveService.dealMessage(message, Constant.MES_ASL, false, 10);
     }
 
     @Override

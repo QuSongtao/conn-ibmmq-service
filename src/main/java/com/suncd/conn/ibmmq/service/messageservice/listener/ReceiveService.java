@@ -48,7 +48,7 @@ public class ReceiveService {
      * @param message  消息体
      * @param sysCode  系统编码
      */
-    public void dealMessage(Message message,String sysCode) {
+    public void dealMessage(Message message,String sysCode,boolean charset, int headLength) {
         // 0. 根据sysCode查找对应的中文名称
         ConnConfSyscode connConfSyscode = connConfSyscodeDao.selectBySysCode(sysCode);
         ConnConfSyscode connConfSyscodeCr = connConfSyscodeDao.selectBySysCode(Constant.MES_CR);
@@ -62,8 +62,9 @@ public class ReceiveService {
                 buff = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(buff);
                 recvStrMsg = new String(buff);
+                LOGGER.info("字节消息1: " + new String(buff, StandardCharsets.UTF_8));
                 String recv1 = new String(recvStrMsg.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-                LOGGER.info("字节消息: " + recv1);
+                LOGGER.info("字节消息2: " + recv1);
             } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
@@ -80,13 +81,19 @@ public class ReceiveService {
 
         // 2.记录消息日志
         LOGGER.info(recvStrMsg);
+        int headLen;
+        if(headLength == 0){
+            headLen = 10;
+        }else{
+            headLen = headLength;
+        }
         String telId;
         String totalType = "RR"; // 统计接收累计标识 RR-正常接收消息 RE-异常接收消息
-        if (recvStrMsg.length() < 10) { // 判断消息长度是否>10
+        if (recvStrMsg.length() < headLen) { // 判断消息长度是否>10
             telId = "LENGTH<10";
             totalType = "RE";
         } else {
-            telId = recvStrMsg.substring(0, 10);
+            telId = recvStrMsg.substring(0, headLen);
         }
 
         try {

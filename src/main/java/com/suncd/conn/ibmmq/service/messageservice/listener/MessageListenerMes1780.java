@@ -27,7 +27,7 @@ public class MessageListenerMes1780 extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "HR_1780.CR.M.1")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.MES_1780);
+        receiveService.dealMessage(message, Constant.MES_1780, false, 10);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class MessageListenerL2Pcsaw extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "PCSAW.CR.Q")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.L2_PCSAW);
+        receiveService.dealMessage(message, Constant.L2_PCSAW, false, 10);
     }
 
     @Override

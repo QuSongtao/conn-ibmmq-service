@@ -27,7 +27,7 @@ public class MessageListenerL2Cc extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "CC.CR.M.1")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.L2_CC);
+        receiveService.dealMessage(message, Constant.L2_CC, false, 10);
     }
 
     @Override

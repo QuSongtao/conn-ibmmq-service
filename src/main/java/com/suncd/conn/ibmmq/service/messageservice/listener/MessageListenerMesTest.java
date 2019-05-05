@@ -27,7 +27,7 @@ public class MessageListenerMesTest extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "TEST.CR")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.MES_TEST);
+        receiveService.dealMessage(message, Constant.MES_TEST, false, 10);
     }
 
     @Override
