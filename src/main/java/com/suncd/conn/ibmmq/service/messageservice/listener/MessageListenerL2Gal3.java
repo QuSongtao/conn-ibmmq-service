@@ -26,7 +26,7 @@ public class MessageListenerL2Gal3 extends MessageListenerAdapter {
     @Override
     @JmsListener(destination = "GAL3.CR.Q")
     public void onMessage(Message message) {
-        receiveService.dealMessage(message, Constant.L2_GAL3, false, 10);
+        receiveService.dealMessage(message, Constant.L2_GAL3, false, 4);
     }
 
     @Override
