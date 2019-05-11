@@ -1,6 +1,7 @@
 package com.suncd.conn.ibmmq.service.messageservice.listener;
 
 import com.ibm.jms.JMSBytesMessage;
+import com.ibm.jms.JMSTextMessage;
 import com.suncd.conn.ibmmq.dao.ConnConfSyscodeDao;
 import com.suncd.conn.ibmmq.dao.ConnRecvMainDao;
 import com.suncd.conn.ibmmq.dao.ConnRecvMsgDao;
@@ -14,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.TextMessage;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
@@ -61,19 +59,21 @@ public class ReceiveService {
             try {
                 buff = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(buff);
-                recvStrMsg = new String(buff);
-                LOGGER.info("字节消息1: " + new String(buff, StandardCharsets.UTF_8));
-                String recv1 = new String(recvStrMsg.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-                LOGGER.info("字节消息2: " + recv1);
+                recvStrMsg = new String(buff, connConfSyscode.getCharSet());
+                StringBuilder bStr = new StringBuilder("[ ");
+                for(byte b : buff){
+                    bStr.append((int) b).append(",");
+                }
+                String  retStr = bStr.substring(0,bStr.lastIndexOf(",")) + " ]";
+                LOGGER.info("字节消息:{}",retStr);
             } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
         } else {
-            TextMessage bm = (TextMessage) message;
+            JMSTextMessage bm = (JMSTextMessage) message;
             try {
                 recvStrMsg = bm.getText();
-                String recv1 = new String(recvStrMsg.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-                LOGGER.info("文本消息: " + recv1);
+                LOGGER.info("文本消息");
             } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
