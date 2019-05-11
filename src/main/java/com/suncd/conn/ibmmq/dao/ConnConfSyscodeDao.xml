@@ -8,103 +8,15 @@
     <result column="connType" jdbcType="CHAR" property="connType" />
     <result column="connProperties" jdbcType="VARCHAR" property="connProperties" />
     <result column="connFlag" jdbcType="CHAR" property="connFlag" />
+    <!--<result column="charSet" jdbcType="VARCHAR" property="charSet" />-->
   </resultMap>
   <sql id="Base_Column_List">
     id, sysCode, sysName, connType, connProperties, connFlag
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from conn_conf_syscode
-    where id = #{id,jdbcType=CHAR}
-  </select>
   <select id="selectBySysCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from conn_conf_syscode
     where sysCode = #{sysCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from conn_conf_syscode
-    where id = #{id,jdbcType=CHAR}
-  </delete>
-  <insert id="insert" parameterType="com.suncd.conn.ibmmq.entity.ConnConfSyscode">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into conn_conf_syscode (sysCode, sysName, connType, 
-      connProperties, connFlag)
-    values (#{sysCode,jdbcType=VARCHAR}, #{sysName,jdbcType=VARCHAR}, #{connType,jdbcType=CHAR}, 
-      #{connProperties,jdbcType=VARCHAR}, #{connFlag,jdbcType=CHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfSyscode">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into conn_conf_syscode
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="sysCode != null">
-        sysCode,
-      </if>
-      <if test="sysName != null">
-        sysName,
-      </if>
-      <if test="connType != null">
-        connType,
-      </if>
-      <if test="connProperties != null">
-        connProperties,
-      </if>
-      <if test="connFlag != null">
-        connFlag,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="sysCode != null">
-        #{sysCode,jdbcType=VARCHAR},
-      </if>
-      <if test="sysName != null">
-        #{sysName,jdbcType=VARCHAR},
-      </if>
-      <if test="connType != null">
-        #{connType,jdbcType=CHAR},
-      </if>
-      <if test="connProperties != null">
-        #{connProperties,jdbcType=VARCHAR},
-      </if>
-      <if test="connFlag != null">
-        #{connFlag,jdbcType=CHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.suncd.conn.ibmmq.entity.ConnConfSyscode">
-    update conn_conf_syscode
-    <set>
-      <if test="sysCode != null">
-        sysCode = #{sysCode,jdbcType=VARCHAR},
-      </if>
-      <if test="sysName != null">
-        sysName = #{sysName,jdbcType=VARCHAR},
-      </if>
-      <if test="connType != null">
-        connType = #{connType,jdbcType=CHAR},
-      </if>
-      <if test="connProperties != null">
-        connProperties = #{connProperties,jdbcType=VARCHAR},
-      </if>
-      <if test="connFlag != null">
-        connFlag = #{connFlag,jdbcType=CHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=CHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.suncd.conn.ibmmq.entity.ConnConfSyscode">
-    update conn_conf_syscode
-    set sysCode = #{sysCode,jdbcType=VARCHAR},
-      sysName = #{sysName,jdbcType=VARCHAR},
-      connType = #{connType,jdbcType=CHAR},
-      connProperties = #{connProperties,jdbcType=VARCHAR},
-      connFlag = #{connFlag,jdbcType=CHAR}
-    where id = #{id,jdbcType=CHAR}
-  </update>
 </mapper>

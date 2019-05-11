@@ -35,8 +35,18 @@ public class ConnConfSyscode implements Serializable {
      * 生效标识
      */
     private String connFlag;
+//    private String charSet;
+
 
     private static final long serialVersionUID = 1L;
+
+//    public String getCharSet() {
+//        return charSet;
+//    }
+//
+//    public void setCharSet(String charSet) {
+//        this.charSet = charSet;
+//    }
 
     public String getId() {
         return id;

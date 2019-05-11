@@ -59,7 +59,7 @@ public class ReceiveService {
             try {
                 buff = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(buff);
-                recvStrMsg = new String(buff, connConfSyscode.getCharSet());
+                recvStrMsg = new String(buff);
                 StringBuilder bStr = new StringBuilder("[ ");
                 for(byte b : buff){
                     bStr.append((int) b).append(",");
