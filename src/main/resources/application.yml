@@ -24,7 +24,7 @@ ibm:
     user: mqm
 #    user: MUSR_MQADMIN
     password: ${IBM_MQ_MQM_PASSWORD:mqm}
-    ccsidDef: 1381
+    ccsidDef: 1208
 
 logging.level.com.suncd.conn.ibmmq.dao: info
 spring.jackson.date-format: yyyy-MM-dd HH:mm:ss

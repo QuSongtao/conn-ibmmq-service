@@ -82,7 +82,13 @@ public class MessagePTPService {
         return msgString;
     }
 
-    // todo=============
+    /**
+     * PTP模式消息发送
+     *
+     * @param destinationName 队列名称
+     * @param msgBuf          消息字符串
+     * @param result          发送结果
+     */
     public void sendMessagePTP(String destinationName, String msgBuf, Map<String, Object> result) {
         // 1.如果队列管理器为空,则从工厂进行创建
         if (null == this.mqQueueManager) {
@@ -130,7 +136,7 @@ public class MessagePTPService {
             }
             // 置空队列管理器,下一次发送的新创建队列管理器连接
             this.mqQueueManager = null;
-            CommonUtil.SYSLOGGER.error(e.getMessage(),e);
+            CommonUtil.SYSLOGGER.error(e.getMessage(), e);
             result.put("sendResult", "发送失败!" + e.getMessage());
             result.put("sendFlag", "0");
             result.put("totalType", "SE");
