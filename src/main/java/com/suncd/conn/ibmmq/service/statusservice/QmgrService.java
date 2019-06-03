@@ -12,5 +12,7 @@ public interface QmgrService {
 
     int getChannelStatus(String channelName);
 
+    int controlChannel(String channelName,int handleCode);
+
     Map getQmgrStatus();
 }

@@ -108,6 +108,51 @@ public class QmgrServiceImp implements QmgrService {
     }
 
     /**
+     * 通道控制
+     *
+     * MQCMD_RESET_CHANNEL = 27;
+     * MQCMD_START_CHANNEL = 28;
+     * MQCMD_STOP_CHANNEL = 29;
+     *
+     * @param channelName 通道名称
+     * @param handleCode  控制代码
+     *                    CMQCFC.MQCMD_RESET_CHANNEL = 27; 重置通道
+     *                    CMQCFC.MQCMD_START_CHANNEL = 28; 启动通道
+     *                    CMQCFC.MQCMD_STOP_CHANNEL = 29;  停止通道
+     * @return int 完成代码 0-成功  非0-异常
+     */
+    @Override
+    public int controlChannel(String channelName, int handleCode) {
+        checkQmgr();
+        PCFMessageAgent agent = null;
+        int compCode;
+        try {
+            agent = new PCFMessageAgent(mqQueueManager);
+            PCFMessage pcfRequest = new PCFMessage(handleCode);
+            pcfRequest.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, channelName);
+            PCFMessage[] response = agent.send(pcfRequest);
+            compCode = response[0].getCompCode();
+            LOGGER.debug("控制通道:{}, 动作:{}, 成功!", channelName, ctlString(handleCode));
+        } catch (IOException e) {
+            LOGGER.warn("控制通道:{}, 动作:{},状态异常:{}", channelName, ctlString(handleCode), e.getMessage());
+            compCode = -9;
+        } catch (MQDataException eh) {
+            LOGGER.warn("控制通道:{}, 动作:{},状态异常:{}", channelName, ctlString(handleCode), eh.getMessage());
+            reconnect(eh);
+            compCode = -1;
+        } finally {
+            try {
+                if (null != agent) {
+                    agent.disconnect();
+                }
+            } catch (MQDataException e) {
+                LOGGER.warn("PCFMessageAgent主动断开出现异常,可忽略!");
+            }
+        }
+        return compCode;
+    }
+
+    /**
      * 获取队列管理器状态
      *
      * @return map {'qmgrName':'XXXX.QM','status':'RUNNING or DOWN'}
@@ -119,6 +164,15 @@ public class QmgrServiceImp implements QmgrService {
         getChannelStatus("SYSTEM.DEF.SVRCONN");
         map.put("status", Constant.QMGR_STATUS == 0 ? "DOWN" : "RUNNING");
         return map;
+    }
+
+    private String ctlString(int handleCode){
+        switch (handleCode){
+            case 27: return "重置";
+            case 28: return "启动";
+            case 29: return "停止";
+            default: return "";
+        }
     }
 
     /**
