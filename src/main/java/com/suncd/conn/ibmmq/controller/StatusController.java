@@ -38,7 +38,7 @@ public class StatusController {
         return qmgrService.getQmgrStatus();
     }
 
-    @RequestMapping(value = "/ctl", method = RequestMethod.GET)
+    @RequestMapping(value = "/ctl", method = RequestMethod.POST)
     public Response ctlChl(String chlName, int handleCode) {
         int compCode = qmgrService.controlChannel(chlName, handleCode);
         if (0 == compCode){
