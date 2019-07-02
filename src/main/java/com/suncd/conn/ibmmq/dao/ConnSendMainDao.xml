@@ -21,7 +21,7 @@
     select
     <include refid="Base_Column_List" />
     from conn_send_main
-    order by createTime desc
+    order by createTime asc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
