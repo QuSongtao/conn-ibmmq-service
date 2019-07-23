@@ -76,18 +76,20 @@ public class MessageSendServiceImp implements MessageSendService {
 
             // 1. 判断待发消息是否为MQ通信
             checkConnType(connSendMain.getReceiver(), result);
-            if (!(boolean) result.get("isMQ")) {
-                // 不为MQ通信则直接跳过
-                continue;
+            if (!result.get("sendFlag").toString().equals("0")){
+
+                if (!(boolean) result.get("isMQ")) {
+                    // 不为MQ通信则直接跳过
+                    continue;
+                }
+
+                // 2.组装消息和查找路由队列
+                String queueName = getQueueName(connSendMain.getTelId(), connSendMain.getSender(), connSendMain.getReceiver());
+                String msgBuf = getSendMsg(connSendMain.getMsgId());
+
+                // 3.发送消息
+                sendToRemote(queueName, msgBuf, result);
             }
-
-            // 2.组装消息和查找路由队列
-            String queueName = getQueueName(connSendMain.getTelId(), connSendMain.getSender(), connSendMain.getReceiver());
-            String msgBuf = getSendMsg(connSendMain.getMsgId());
-
-            // 3.发送消息
-            sendToRemote(queueName, msgBuf, result);
-
             // 4.按主键删除发送总表记录
             connSendMainDao.deleteByPrimaryKey(connSendMain.getId());
 
@@ -180,7 +182,12 @@ public class MessageSendServiceImp implements MessageSendService {
         if (null == connConfSyscode) {
             CommonUtil.SYSLOGGER.warn("【警告】通信系统编码:{} 没有在CONN_CONF_SYSCODE表中定义！", sysCode);
             result.put("isMQ", false);
+            result.put("sendFlag", "0"); // 区分消息格式是否正确
+            result.put("sendResult", "【警告】通信系统编码:" + sysCode + " 没有在CONN_CONF_SYSCODE表中定义！");
+            result.put("totalType", "SE");
+
         } else {
+            result.put("sendFlag", "1");
             result.put("isJMS", connConfSyscode.getConnProperties().equals(Constant.MQ_JMS));
             result.put("isMQ", connConfSyscode.getConnType().equals(Constant.CONN_MQ));
         }
