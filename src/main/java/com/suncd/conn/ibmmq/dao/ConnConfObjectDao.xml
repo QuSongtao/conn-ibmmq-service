@@ -27,7 +27,7 @@
     <if test="transferType != null">
       and transferType = #{transferType,jdbcType=CHAR}
     </if>
-    order by remoteSystem,objName asc
+    order by remoteSystem,transferType,objName asc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
