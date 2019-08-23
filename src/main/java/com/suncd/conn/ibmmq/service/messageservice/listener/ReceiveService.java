@@ -10,10 +10,12 @@ import com.suncd.conn.ibmmq.entity.ConnConfSyscode;
 import com.suncd.conn.ibmmq.entity.ConnRecvMain;
 import com.suncd.conn.ibmmq.entity.ConnRecvMsg;
 import com.suncd.conn.ibmmq.system.constants.Constant;
+import com.suncd.conn.ibmmq.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.jms.Message;
 import java.util.Date;
@@ -87,8 +89,8 @@ public class ReceiveService {
      * @param headLength 电文ID长度
      * @author qust 20190823
      */
-    public void handleMsg(String recvStrMsg, String sysCode,  int headLength) {
-        if(null == recvStrMsg){
+    public void handleMsg(String recvStrMsg, String sysCode, int headLength) {
+        if (StringUtils.isEmpty(recvStrMsg)) {
             return;
         }
         // 1.记录消息日志
@@ -142,6 +144,8 @@ public class ReceiveService {
                 connRecvMain.setReceiverName("未配置");
             }
             connRecvMainDao.insertSelective(connRecvMain);
+            // 记录插入接收总表成功日志
+            CommonUtil.SYSLOGGER.info("插入接收总表成功,msgId={},telId={}", msgId, telId);
 
             // 5.更新统计表
             connTotalNumDao.updateTotalNum(totalType);
