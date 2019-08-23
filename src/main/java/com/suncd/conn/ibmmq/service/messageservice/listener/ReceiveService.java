@@ -88,6 +88,9 @@ public class ReceiveService {
      * @author qust 20190823
      */
     public void handleMsg(String recvStrMsg, String sysCode,  int headLength) {
+        if(null == recvStrMsg){
+            return;
+        }
         // 1.记录消息日志
         LOGGER.info(recvStrMsg);
 

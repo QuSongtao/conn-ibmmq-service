@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
@@ -51,7 +52,7 @@ public class MessagePTPService {
                 /* 从消息读取用户数据, 读取单条消息的全部长度 */
                 byte[] bStr = new byte[inMsg.getDataLength()];
                 inMsg.readFully(bStr);
-                msgString = new String(bStr);
+                msgString = new String(bStr, StandardCharsets.UTF_8);
             }
             /* 提交事务 */
             mqQueueManager.commit();
