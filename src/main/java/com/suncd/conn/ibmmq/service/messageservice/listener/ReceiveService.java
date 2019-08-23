@@ -43,13 +43,10 @@ public class ReceiveService {
     /**
      * 接收消息核心处理逻辑
      *
-     * @param message  消息体
-     * @param sysCode  系统编码
+     * @param message 消息体
+     * @param sysCode 系统编码
      */
-    public void dealMessage(Message message,String sysCode,boolean charset, int headLength) {
-        // 0. 根据sysCode查找对应的中文名称
-        ConnConfSyscode connConfSyscode = connConfSyscodeDao.selectBySysCode(sysCode);
-        ConnConfSyscode connConfSyscodeCr = connConfSyscodeDao.selectBySysCode(Constant.MES_CR);
+    public void dealMessage(Message message, String sysCode, boolean charset, int headLength) {
 
         // 1.监听并读取消息
         String recvStrMsg = "";
@@ -61,11 +58,11 @@ public class ReceiveService {
                 bm.readBytes(buff);
                 recvStrMsg = new String(buff);
                 StringBuilder bStr = new StringBuilder("[ ");
-                for(byte b : buff){
+                for (byte b : buff) {
                     bStr.append((int) b).append(",");
                 }
-                String  retStr = bStr.substring(0,bStr.lastIndexOf(",")) + " ]";
-                LOGGER.info("字节消息:{}",retStr);
+                String retStr = bStr.substring(0, bStr.lastIndexOf(",")) + " ]";
+                LOGGER.info("字节消息:{}", retStr);
             } catch (Exception e) {
                 WARN_LOGGER.error(e.getMessage(), e);
             }
@@ -79,12 +76,29 @@ public class ReceiveService {
             }
         }
 
-        // 2.记录消息日志
+        // 2.处理消息
+        handleMsg(recvStrMsg, sysCode, headLength);
+    }
+
+    /**
+     * 处理接收消息
+     *
+     * @param recvStrMsg 接收消息字符串
+     * @param headLength 电文ID长度
+     * @author qust 20190823
+     */
+    public void handleMsg(String recvStrMsg, String sysCode,  int headLength) {
+        // 1.记录消息日志
         LOGGER.info(recvStrMsg);
+
+        // 2. 根据sysCode查找对应的中文名称
+        ConnConfSyscode connConfSyscode = connConfSyscodeDao.selectBySysCode(sysCode);
+        ConnConfSyscode connConfSyscodeCr = connConfSyscodeDao.selectBySysCode(Constant.MES_CR);
+
         int headLen;
-        if(headLength == 0){
+        if (headLength == 0) {
             headLen = 10;
-        }else{
+        } else {
             headLen = headLength;
         }
         String telId;
@@ -112,24 +126,24 @@ public class ReceiveService {
             connRecvMain.setMsgId(msgId);
             connRecvMain.setTelId(telId);
             connRecvMain.setRecvTime(new Date());
-            if(null != connConfSyscode){
+            if (null != connConfSyscode) {
                 connRecvMain.setSender(connConfSyscode.getSysCode());
                 connRecvMain.setSenderName(connConfSyscode.getSysName());
-            }else{
+            } else {
                 connRecvMain.setSenderName("未配置");
             }
-            if(null != connConfSyscodeCr) {
+            if (null != connConfSyscodeCr) {
                 connRecvMain.setReceiver(connConfSyscodeCr.getSysCode());
                 connRecvMain.setReceiverName(connConfSyscodeCr.getSysName());
-            }else{
+            } else {
                 connRecvMain.setReceiverName("未配置");
             }
             connRecvMainDao.insertSelective(connRecvMain);
 
             // 5.更新统计表
             connTotalNumDao.updateTotalNum(totalType);
-        }catch (Exception e){
-            WARN_LOGGER.error("MQ消息处理出现异常:",e);
+        } catch (Exception e) {
+            WARN_LOGGER.error("MQ消息处理出现异常:", e);
         }
     }
 

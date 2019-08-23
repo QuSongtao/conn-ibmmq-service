@@ -7,7 +7,7 @@ import com.suncd.conn.ibmmq.utils.QmgrFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -17,22 +17,19 @@ public class MessagePTPService {
 
     private MQQueueManager mqQueueManager;
 
-    public String recvMsg(String qmName, String qname) {
+    public String recvMsg(String qname) {
+        // 1.如果队列管理器为空,则从工厂进行创建
+        if (null == this.mqQueueManager) {
+            this.mqQueueManager = qmgrFactory.createMqQueueManager();
+        }
         String msgString = null;
-        boolean enabled = true;
-        MQQueueManager qMgr = null;
         MQQueue queue = null;
         try {
-            String qManager = qmName;
-            String qName = qname;
             MQEnvironment.properties.put(CMQC.TRANSPORT_PROPERTY, CMQC.TRANSPORT_MQSERIES);
-            /* 连接到队列管理器 */
-            qMgr = new MQQueueManager(qManager);
-            MQEnvironment.CCSID = 1381;
-            int openOptions = CMQC.MQOO_INPUT_SHARED
-                    | CMQC.MQOO_FAIL_IF_QUIESCING | CMQC.MQOO_INQUIRE;
+            MQEnvironment.CCSID = 1386;
+            int openOptions = CMQC.MQOO_INPUT_SHARED | CMQC.MQOO_FAIL_IF_QUIESCING | CMQC.MQOO_INQUIRE;
             /* 打开队列 */
-            queue = qMgr.accessQueue(qName, openOptions, null, null, null);
+            queue = mqQueueManager.accessQueue(qname, openOptions, null, null, null);
             while (queue.getCurrentDepth() > 0) {
                 /* 设置放置消息选项 */
                 MQGetMessageOptions gmo = new MQGetMessageOptions();
@@ -46,37 +43,28 @@ public class MessagePTPService {
 //                gmo.waitInterval = 3000;
                 /* 创建MQMessage 类 */
                 MQMessage inMsg = new MQMessage();
-                inMsg.characterSet = 1381;
+                inMsg.characterSet = 1386;
                 inMsg.format = CMQC.MQFMT_STRING;
                 /* 从队列到消息缓冲区获取消息 */
                 queue.get(inMsg, gmo);
-                /* 从消息读取用户数据 */
-                msgString = "";
-                String strBuff = "";
 
-                /* 读取单条消息的全部长度
-                 */
-//                inMsg.readUTF()
-                if (inMsg != null) {
-                    byte[] bStr = new byte[inMsg.getDataLength()];
-                    inMsg.readFully(bStr);
-                    msgString = new String(bStr);
-                    System.out.println("msg:" + msgString);
-                }
+                /* 从消息读取用户数据, 读取单条消息的全部长度 */
+                byte[] bStr = new byte[inMsg.getDataLength()];
+                inMsg.readFully(bStr);
+                msgString = new String(bStr);
             }
             /* 提交事务 */
-            qMgr.commit();
+            mqQueueManager.commit();
         } catch (MQException ex) {
-
-        } catch (Exception e) {
-
+            handleMgr();
+        } catch (IOException e) {
+            CommonUtil.SYSLOGGER.error(e.getMessage());
         } finally {
             try {
                 /* 关闭队列和队列管理器对象 */
                 queue.close();
-                qMgr.disconnect();
             } catch (Exception ex) {
-
+                CommonUtil.SYSLOGGER.error(ex.getMessage());
             }
         }
         return msgString;
@@ -123,19 +111,7 @@ public class MessagePTPService {
             result.put("sendFlag", "1");
             result.put("totalType", "SS");
         } catch (Exception e) {
-            // 异常则关闭队列管理器
-            try {
-                mqQueueManager.close();
-            } catch (Exception eq) {
-                CommonUtil.SYSLOGGER.error(eq.getMessage(), eq);
-            }
-            try {
-                mqQueueManager.disconnect();
-            } catch (Exception eq) {
-                CommonUtil.SYSLOGGER.error(eq.getMessage(), eq);
-            }
-            // 置空队列管理器,下一次发送的新创建队列管理器连接
-            this.mqQueueManager = null;
+            handleMgr();
             CommonUtil.SYSLOGGER.error(e.getMessage(), e);
             result.put("sendResult", "发送失败!" + e.getMessage());
             result.put("sendFlag", "0");
@@ -147,6 +123,22 @@ public class MessagePTPService {
                 CommonUtil.SYSLOGGER.error(e.getMessage(), e);
             }
         }
+    }
+
+    private void handleMgr(){
+        // 异常则关闭队列管理器
+        try {
+            mqQueueManager.close();
+        } catch (Exception eq) {
+            CommonUtil.SYSLOGGER.error(eq.getMessage(), eq);
+        }
+        try {
+            mqQueueManager.disconnect();
+        } catch (Exception eq) {
+            CommonUtil.SYSLOGGER.error(eq.getMessage(), eq);
+        }
+        // 置空队列管理器,下一次发送的新创建队列管理器连接
+        this.mqQueueManager = null;
     }
 
 //    public static void main(String[] args) {
