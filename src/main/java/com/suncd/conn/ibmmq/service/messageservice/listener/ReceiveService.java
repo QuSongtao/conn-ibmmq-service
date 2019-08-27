@@ -2,18 +2,17 @@ package com.suncd.conn.ibmmq.service.messageservice.listener;
 
 import com.ibm.jms.JMSBytesMessage;
 import com.ibm.jms.JMSTextMessage;
-import com.suncd.conn.ibmmq.dao.ConnConfSyscodeDao;
-import com.suncd.conn.ibmmq.dao.ConnRecvMainDao;
-import com.suncd.conn.ibmmq.dao.ConnRecvMsgDao;
-import com.suncd.conn.ibmmq.dao.ConnTotalNumDao;
+import com.suncd.conn.ibmmq.dao.*;
 import com.suncd.conn.ibmmq.entity.ConnConfSyscode;
 import com.suncd.conn.ibmmq.entity.ConnRecvMain;
+import com.suncd.conn.ibmmq.entity.ConnRecvMainHis;
 import com.suncd.conn.ibmmq.entity.ConnRecvMsg;
 import com.suncd.conn.ibmmq.system.constants.Constant;
 import com.suncd.conn.ibmmq.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -41,6 +40,8 @@ public class ReceiveService {
     private ConnTotalNumDao connTotalNumDao;
     @Autowired
     private ConnConfSyscodeDao connConfSyscodeDao;
+    @Autowired
+    private ConnRecvMainHisDao connRecvMainHisDao;
 
     /**
      * 接收消息核心处理逻辑
@@ -87,9 +88,10 @@ public class ReceiveService {
      *
      * @param recvStrMsg 接收消息字符串
      * @param headLength 电文ID长度
-     * @author qust 20190823
+     * @author qust 20190823 代码分离
+     * @author qust 20190827 处理触发器执行异常的消息
      */
-    public void handleMsg(String recvStrMsg, String sysCode, int headLength) {
+    private void handleMsg(String recvStrMsg, String sysCode, int headLength) {
         if (StringUtils.isEmpty(recvStrMsg)) {
             return;
         }
@@ -115,17 +117,19 @@ public class ReceiveService {
             telId = recvStrMsg.substring(0, headLen);
         }
 
+        String mainId = UUID.randomUUID().toString();
+        String msgId = UUID.randomUUID().toString();
         try {
             // 3.插入接收消息表
-            String msgId = UUID.randomUUID().toString();
             ConnRecvMsg connRecvMsg = new ConnRecvMsg();
             connRecvMsg.setId(msgId);
             connRecvMsg.setMsgTxt(recvStrMsg);
             connRecvMsg.setCreateTime(new Date());
             connRecvMsgDao.insertSelective(connRecvMsg);
+            // 记录插入接收总表成功日志
+            CommonUtil.SYSLOGGER.info("插入接收总表成功,msgId={},telId={}", msgId, telId);
 
             // 4.插入接收总表
-            String mainId = UUID.randomUUID().toString();
             ConnRecvMain connRecvMain = new ConnRecvMain();
             connRecvMain.setId(mainId);
             connRecvMain.setMsgId(msgId);
@@ -144,13 +148,35 @@ public class ReceiveService {
                 connRecvMain.setReceiverName("未配置");
             }
             connRecvMainDao.insertSelective(connRecvMain);
-            // 记录插入接收总表成功日志
-            CommonUtil.SYSLOGGER.info("插入接收总表成功,msgId={},telId={}", msgId, telId);
 
             // 5.更新统计表
             connTotalNumDao.updateTotalNum(totalType);
-        } catch (Exception e) {
-            WARN_LOGGER.error("MQ消息处理出现异常:", e);
+        } catch (UncategorizedSQLException e) {
+            WARN_LOGGER.error("SQL异常(触发器可能执行失败):", e);
+            // 触发器处理异常的消息,记录到接收历史表
+            ConnRecvMainHis connRecvMainHis = new ConnRecvMainHis();
+            connRecvMainHis.setId(mainId);
+            connRecvMainHis.setDealTime(new Date());
+            connRecvMainHis.setRecvTime(new Date());
+            connRecvMainHis.setMsgId(msgId);
+            if (null != connConfSyscode) {
+                connRecvMainHis.setSender(connConfSyscode.getSysCode());
+                connRecvMainHis.setSenderName(connConfSyscode.getSysName());
+            } else {
+                connRecvMainHis.setSenderName("未配置");
+            }
+            connRecvMainHis.setDes(e.getMessage());
+            connRecvMainHis.setTelId(telId);
+            if (null != connConfSyscodeCr) {
+                connRecvMainHis.setReceiver(connConfSyscodeCr.getSysCode());
+                connRecvMainHis.setReceiverName(connConfSyscodeCr.getSysName());
+            } else {
+                connRecvMainHis.setReceiverName("未配置");
+            }
+            connRecvMainHis.setDealFlag("9"); // 触发器处理异常
+            connRecvMainHisDao.insertSelective(connRecvMainHis);
+        } catch (Exception e){
+            WARN_LOGGER.error("接收服务处理异常:", e);
         }
     }
 
