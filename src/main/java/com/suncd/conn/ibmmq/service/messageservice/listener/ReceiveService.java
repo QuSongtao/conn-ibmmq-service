@@ -127,7 +127,7 @@ public class ReceiveService {
             connRecvMsg.setCreateTime(new Date());
             connRecvMsgDao.insertSelective(connRecvMsg);
             // 记录插入接收总表成功日志
-            CommonUtil.SYSLOGGER.info("插入接收总表成功,msgId={},telId={}", msgId, telId);
+//            CommonUtil.SYSLOGGER.info("插入接收总表成功,msgId={},telId={}", msgId, telId);
 
             // 4.插入接收总表
             ConnRecvMain connRecvMain = new ConnRecvMain();
