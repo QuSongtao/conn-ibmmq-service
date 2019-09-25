@@ -13,6 +13,7 @@ import org.springframework.jms.core.JmsTemplate;
 /**
  * (废弃)
  */
+@Deprecated
 //@Configuration
 public class IbmMqJmsConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(IbmMqJmsConfiguration.class);
