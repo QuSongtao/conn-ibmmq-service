@@ -8,7 +8,6 @@ import com.suncd.conn.ibmmq.entity.ConnRecvMain;
 import com.suncd.conn.ibmmq.entity.ConnRecvMainHis;
 import com.suncd.conn.ibmmq.entity.ConnRecvMsg;
 import com.suncd.conn.ibmmq.system.constants.Constant;
-import com.suncd.conn.ibmmq.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ public class ReceiveService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReceiveService.class);
     private static final Logger WARN_LOGGER = LoggerFactory.getLogger("warnAndErrorLogger");
+    private static final Logger LOSER_LOGGER = LoggerFactory.getLogger("mqLoserLogger");
 
     @Autowired
     private ConnRecvMainDao connRecvMainDao;
@@ -42,6 +42,8 @@ public class ReceiveService {
     private ConnConfSyscodeDao connConfSyscodeDao;
     @Autowired
     private ConnRecvMainHisDao connRecvMainHisDao;
+    @Autowired
+    private SimpleDao simpleDao;
 
     /**
      * 接收消息核心处理逻辑
@@ -97,6 +99,15 @@ public class ReceiveService {
         }
         // 1.记录消息日志
         LOGGER.info(recvStrMsg);
+
+        // 判断数据库操作是否正常
+        try {
+            simpleDao.query("SELECT 1 FROM DUAL");
+        } catch (Exception e) {
+            LOSER_LOGGER.info(recvStrMsg);
+            WARN_LOGGER.error("数据库异常,丢失消息记录至特定文件", e);
+            return;
+        }
 
         // 2. 根据sysCode查找对应的中文名称
         ConnConfSyscode connConfSyscode = connConfSyscodeDao.selectBySysCode(sysCode);
@@ -175,7 +186,7 @@ public class ReceiveService {
             }
             connRecvMainHis.setDealFlag("9"); // 触发器处理异常
             connRecvMainHisDao.insertSelective(connRecvMainHis);
-        } catch (Exception e){
+        } catch (Exception e) {
             WARN_LOGGER.error("接收服务处理异常:", e);
         }
     }

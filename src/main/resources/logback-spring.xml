@@ -95,6 +95,27 @@
         </filter>
     </appender>
 
+    <!-- mq接收消息因数据库无法访问,记录消息至特定日志 -->
+    <appender name="mqLoserAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>logs/mq/loserLog/mqLoser_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>${MAX_LOG_HISTORY:-30}</maxHistory>
+            <CleanHistoryOnStart>true</CleanHistoryOnStart>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${MSG_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="StdoutAppender"/>
         <appender-ref ref="sysLogAppender"/>
@@ -104,6 +125,11 @@
     <logger name="warnAndErrorLogger" additivity="false">
         <appender-ref ref="StdoutAppender"/>
         <appender-ref ref="sysLogAppender"/>
+    </logger>
+
+    <!-- 接收消息因数据库异常时,存入特定日志文件 -->
+    <logger name="mqLoserLogger" additivity="false">
+        <appender-ref ref="mqLoserAppender"/>
     </logger>
 
     <!-- 发送消息记录到发送日志中 -->
