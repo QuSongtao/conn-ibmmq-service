@@ -104,7 +104,7 @@ public class ReceiveService {
         try {
             simpleDao.query("SELECT 1 FROM DUAL");
         } catch (Exception e) {
-            LOSER_LOGGER.info(recvStrMsg);
+            LOSER_LOGGER.info(sysCode + "//" + recvStrMsg);
             WARN_LOGGER.error("数据库异常,丢失消息记录至特定文件", e);
             return;
         }
