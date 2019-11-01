@@ -18,7 +18,7 @@ public class MessagePTPService {
 
     private MQQueueManager mqQueueManager;
 
-    public String recvMsg(String qname) {
+    public String recvMsgPTP(String qname) {
         // 1.如果队列管理器为空,则从工厂进行创建
         if (null == this.mqQueueManager) {
             this.mqQueueManager = qmgrFactory.createMqQueueManager();
