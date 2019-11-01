@@ -5,7 +5,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@${ORACLE_URL:192.168.1.65:1521:orcl}
+    url: jdbc:oracle:thin:@${ORACLE_URL:192.168.1.66:1521:orcl}
     username: ${ORACLE_USERNAME:CONN}
     password: ${ORACLE_PASSWORD:123456}
     hikari:
@@ -24,7 +24,7 @@ ibm:
     user: mqm
 #    user: MUSR_MQADMIN
     password: ${IBM_MQ_MQM_PASSWORD:mqm}
-    ccsidDef: 1386
+    ccsidDef: ${IBM_MQ_CCSID:1386}
 
 logging.level.com.suncd.conn.ibmmq.dao: info
 spring.jackson.date-format: yyyy-MM-dd HH:mm:ss
