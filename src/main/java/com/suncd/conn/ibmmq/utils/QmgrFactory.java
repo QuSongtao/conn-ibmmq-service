@@ -40,7 +40,6 @@ public class QmgrFactory {
         MQEnvironment.channel = channel;
         MQEnvironment.CCSID = ccsid;
         MQQueueManager mqQueueManager = null;
-        LOGGER.info("字符集:{}", ccsid);
         try {
             mqQueueManager = new MQQueueManager(qmName);
             Constant.QMGR_STATUS = 1;
